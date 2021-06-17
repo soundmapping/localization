@@ -1,1 +1,3 @@
-# localization
+# CSE4223-ODAS
+This repository is created to develop and document any scripts that are made under the supervision of Prof. Yoav Freund and Prof. Peter Gerstoft. The goal of this research is to use spatial data extracted from sound, such as direction of arrival (DOA), to analyze activities present in space and further understand certain activity patterns. PCA analysis is currently implemented to map multiple DOAs into 2-D floor plans, where locations of sound sources and their moving tracjectories are indicated. Future research includes creating precise 2D mapping and improving sound reconstruction.
+
