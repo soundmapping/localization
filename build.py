@@ -8,13 +8,13 @@
 import subprocess as p
 
 # Setting up working directory
-wd = "/home/pi/odas/SoundMapping-ODAS/Matrix"
+wd = "/home/pi/odas/localization/Matrix"
 
 # Ask for array index from user input 
 arrayInd = input("Enter array index: ")
 
 # Create backup.sh based on array index
-with open ("/home/pi/odas/SoundMapping-ODAS/Matrix/backup.sh", "w") as rsh:
+with open ("/home/pi/odas/localization/Matrix/backup.sh", "w") as rsh:
     rsh.write(
 '''
 #! /bin/bash
@@ -25,7 +25,7 @@ rclone copy /home/pi/odas/recordings/postfiltered RaspberryPi:/ODAS/recordings{0
 '''.format(arrayInd))
 
 # Create IPupload.sh based on array index
-with open ('/home/pi/odas/SoundMapping-ODAS/Matrix/IPupload.sh', 'w') as rsh:
+with open ('/home/pi/odas/localization/Matrix/IPupload.sh', 'w') as rsh:
     rsh.write(
 '''
 #! /bin/bash
