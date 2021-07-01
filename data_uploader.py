@@ -6,25 +6,10 @@ import json
 import datetime
 import time
 import shutil
-import datetime
 from sqlalchemy import create_engine
 import sys
-from random import randint
 
-# Functions
-
-
-def append_random_string(filename):
-    """Duplicate files are a huge problem. Trying to append a random number before moving."""
-    suff = randint(10000000, 99999999)
-    suff_str = str(suff)
-    base_name = os.path.basename(filename)
-    base_name_no_ext = base_name[:-4]
-    new_name = base_name_no_ext + suff_str + '.log'
-    new_full_name = os.path.join(os.path.dirname(filename),new_name)
-    return(new_full_name)
-
-
+###############################################################################
 # Extract time information of each recording from the log file
 def timeExtract(filename):
     with open(filename, 'rb') as f:
@@ -57,7 +42,6 @@ def durationinMicroseconds(filename):
     
     return duration, T1, T2
 
-
 # Converts .log files into pandas dataframes
 def extractDirectionalities(filename, mic_number):
     with open(filename, 'r') as f:
@@ -71,11 +55,14 @@ def extractDirectionalities(filename, mic_number):
 
     # list of src blocks
     srcList = [json.loads(block)["src"] for block in data]
-
+    
     # initialize dataframe to have colums: timestamp, time, data inside source
     # timestamp is the initial time stamp
     # time is the datetime value converted from the timestamp and intitial time
     # source is a 4 by 6 array where the rows are the source, and the columns are the source values
+    
+    # ODAS can track up to 4 sources
+    # Activity: SST - probability of that sound source being active at that snapshot, SSL - energy/intensity of the source
     df = pd.DataFrame(
         columns=['Timestamp', 'Time', 'Time In Seconds', 'Microphone Number', 'Source ID_0', 'X_0', 'Y_0', 'Z_0',
                  'Activity_0', 'Source ID_1', 'X_1', 'Y_1', 'Z_1', 'Activity_1', 'Source ID_2', 'X_2', 'Y_2', 'Z_2',
@@ -102,18 +89,17 @@ def extractDirectionalities(filename, mic_number):
     df = df.append(pd.DataFrame.from_dict(df_dict, "index"))
     return (df)
 
-
-
+###############################################################################
 newest = sys.argv[1]
-
 mic_number = newest[-5] # given currently used file nomenclature _x.log
 
-
-destination = "/home/ardelalegre/google-drive/ODAS/logs" + str(mic_number) + "/SST/Processed"
-destination2 = '/home/ardelalegre/google-drive/ODAS/logs' + str(mic_number) + '/SST/Duplicates'
-
 str_com_pre = 'rclone deletefile RaspberryPi:ODAS/'
+gdrive = "/Users/odas2/Google Drive/My Drive/ODAS/logs"
+destination = gdrive+str(mic_number)+"/SST/Processed"
 
+# extract data from log file and convert to pandas df
+
+# Handling empty log files:
 with open(newest, 'r') as f:
         firstline = f.readline()
         if firstline == "SST log contains no useful data\n":
@@ -128,19 +114,15 @@ with open(newest, 'r') as f:
                 err_num = os.system(del_command)
                 if(err_num):
                     print(datetime.datetime.now(), ',' ,err_num, 'was the exit code of the error')
-#                 a = append_random_string(newest)
-#                 os.rename(newest,a)
-#                 temp2 = shutil.move(a, destination2)
             sys.exit()
+            
 df = extractDirectionalities(newest, mic_number)
-# code to shift notebook to processed directory
 
-
-# create sqlalchemy engine
+# connect to data base and upload to raw table 
 engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
                        .format(user="root",
-                               pw="test",
-                               db="odas_db_proc"))
+                               pw="odasodas",
+                               db="soundmapping"))
 
 df.to_sql('raw', con = engine, if_exists = 'append', chunksize = 1000)
 
@@ -152,7 +134,3 @@ except shutil.Error:
     del_command = str_com_pre + str_com_post
     print(datetime.datetime.now(),', Deleting file', newest, 'using the command', del_command)
     os.system(del_command)
-#     a = append_random_string(newest)
-#     os.rename(newest,a)
-#     temp2 = shutil.move(a, destination2)
-

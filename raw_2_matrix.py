@@ -5,12 +5,10 @@ import pandas as pd
 from sqlalchemy import create_engine
 import time
 
-
-
 engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
                        .format(user="root",
-                               pw="test",
-                               db="odas_db_proc"))
+                               pw="odasodas",
+                               db="soundmapping"))
 
 INTERVAL = 0.064
 THRESHOLD = 0.00385
@@ -22,7 +20,7 @@ WHERE `Time In Seconds` >= {2} and `Time In Seconds`< {3}
 # RAW_TABLE_QUERY = "SELECT *, ((`Time In Seconds` DIV {0}) * {0}) AS quantized_time from raw where `Time In Seconds` >= {2} and `Time In Seconds`< {3}"
 # Might change this later
 GROUP_BY_QUERY ='''
-INSERT INTO multiDimMatrix
+INSERT INTO multiDimMatrix5
 select
   derivedTable.quantized_time,
   sum(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) as X_0_0,
@@ -71,8 +69,8 @@ group_by()
 script_end = datetime.datetime.now()
 execution_time = script_end - script_start
 print('Pushed data successfully at', datetime.datetime.now())
-app_list = [script_end, execution_time]
+# app_list = [script_end, execution_time]
 
-with open(r'/home/ardelalegre/Documents/SQL_AllProc/sync_to_multiDimMatrix_csv.csv', 'a') as f:
-    w = csv.writer(f)
-    w.writerow(app_list)
+# with open(r'/home/ardelalegre/Documents/SQL_AllProc/sync_to_multiDimMatrix_csv.csv', 'a') as f:
+#     w = csv.writer(f)
+#     w.writerow(app_list)

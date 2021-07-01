@@ -1,0 +1,102 @@
+2021-07-01 11:56:00.862652 , There are no log files to move. Bye!
+2021-07-01 11:57:00.928523 , There are no log files to move. Bye!
+2021-07-01 11:58:01.046966 , There are no log files to move. Bye!
+2021-07-01 11:59:00.157203 , There are no log files to move. Bye!
+2021-07-01 12:00:00.925478 , No data in file
+2021-07-01 12:00:00.980130 , 0
+2021-07-01 12:01:01.098117 , There are no log files to move. Bye!
+2021-07-01 12:02:00.224707 , There are no log files to move. Bye!
+2021-07-01 12:03:00.335282 , There are no log files to move. Bye!
+2021-07-01 12:04:00.545084 , There are no log files to move. Bye!
+2021-07-01 12:05:00.664549 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:06:10.910267 , 0
+2021-07-01 12:07:01.144484 , There are no log files to move. Bye!
+2021-07-01 12:08:00.314593 , There are no log files to move. Bye!
+2021-07-01 12:09:00.503662 , There are no log files to move. Bye!
+2021-07-01 12:10:00.705740 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:11:11.256178 , 0
+2021-07-01 12:12:00.318476 , There are no log files to move. Bye!
+2021-07-01 12:13:00.514702 , There are no log files to move. Bye!
+2021-07-01 12:14:00.690835 , There are no log files to move. Bye!
+2021-07-01 12:15:00.890243 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:16:06.794881 , 0
+2021-07-01 12:17:00.512300 , There are no log files to move. Bye!
+2021-07-01 12:18:00.688309 , There are no log files to move. Bye!
+2021-07-01 12:19:00.885868 , There are no log files to move. Bye!
+2021-07-01 12:20:01.084194 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:21:07.145585 , 0
+2021-07-01 12:22:00.789758 , There are no log files to move. Bye!
+2021-07-01 12:23:00.977909 , There are no log files to move. Bye!
+2021-07-01 12:24:01.151030 , There are no log files to move. Bye!
+2021-07-01 12:25:00.287441 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:26:08.200734 , 0
+2021-07-01 12:27:00.328713 , There are no log files to move. Bye!
+2021-07-01 12:28:00.519504 , There are no log files to move. Bye!
+2021-07-01 12:29:00.713810 , There are no log files to move. Bye!
+2021-07-01 12:30:00.864793 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:31:05.446104 , 0
+2021-07-01 12:32:01.085220 , There are no log files to move. Bye!
+2021-07-01 12:33:00.283397 , There are no log files to move. Bye!
+2021-07-01 12:34:00.486653 , There are no log files to move. Bye!
+2021-07-01 12:35:00.695337 , There are no log files to move. Bye!
+/opt/anaconda3/envs/soundmapping/lib/python3.5/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass 'sort=False'.
+
+To retain the current behavior and silence the warning, pass 'sort=True'.
+
+  sort=sort)
+2021-07-01 12:36:07.884622 , 0
+2021-07-01 12:37:00.401028 , There are no log files to move. Bye!
+2021-07-01 12:38:00.596522 , There are no log files to move. Bye!
+2021-07-01 12:39:00.803366 , There are no log files to move. Bye!
+2021-07-01 12:40:01.006181 , There are no log files to move. Bye!
