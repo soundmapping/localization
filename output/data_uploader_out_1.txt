@@ -52,3 +52,4 @@ To retain the current behavior and silence the warning, pass 'sort=True'.
 2021-07-01 12:38:00.597874 , There are no log files to move. Bye!
 2021-07-01 12:39:00.800184 , There are no log files to move. Bye!
 2021-07-01 12:40:01.008348 , There are no log files to move. Bye!
+2021-07-01 12:41:01.106342 , There are no log files to move. Bye!
