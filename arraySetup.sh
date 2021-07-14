@@ -72,5 +72,8 @@ git clone https://github.com/soundmapping/localization.git
 cd localization
 git checkout array
 
+# Enable SSH & Build Array
+sudo systemctl enable ssh
+sudo systemctl start ssh
 python3 build.py ${PINUMBER}
 sudo reboot
