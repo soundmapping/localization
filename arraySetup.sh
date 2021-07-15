@@ -24,7 +24,7 @@ curl https://apt.matrix.one/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.matrix.one/raspbian $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/matrixlabs.list
 
 sudo apt-get update -y
-sudo apt-get upgrade -y
+sudo apt-get full-upgrade -y
 
 sudo apt install matrixio-creator-init -y
 sudo apt install libmatrixio-creator-hal -y
@@ -59,11 +59,11 @@ sudo systemctl disable systemd-timesyncd
 sudo /etc/init.d/ntp start
 
 # Clock Synchronization
-sudo echo -e "# pool.ntp.org maps to more than 300 low-stratum NTP servers. \n\
+echo -e "# pool.ntp.org maps to more than 300 low-stratum NTP servers. \n\
 # Your server will pick a different set every time it starts up. \n\
 # *** Please consider joining the pool! *** \n\
 # *** *** \n\
-server ntp.ucsd.edu \n" >> /etc/ntp.conf
+server ntp.ucsd.edu \n" | sudo tee -a /etc/ntp.conf
 
 sudo /etc/init.d/ntp restart
 
@@ -72,8 +72,5 @@ git clone https://github.com/soundmapping/localization.git
 cd localization
 git checkout array
 
-# Enable SSH & Build Array
-sudo systemctl enable ssh
-sudo systemctl start ssh
 python3 build.py ${PINUMBER}
 sudo reboot
