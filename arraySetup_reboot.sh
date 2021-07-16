@@ -25,19 +25,19 @@ state_1(){
         (sudo crontab -l ; echo -e "@reboot su pi -c \"$SCRIPT\" ") | sudo crontab -
         echo -e "Now in State 1!"
         echo -e "Hello State 1!" > ~/Desktop/state_1.txt
-        # sudo reboot
+        sudo reboot
 }
 
 state_2(){
         echo -e "Now in State 2!"
         echo -e "Hello State 2!" > ~/Desktop/state_2.txt
-        # sudo reboot
+        sudo reboot
 }
 
 state_3(){
         echo -e "Now in State 3!"
         echo -e "Hello State 3!" > ~/Desktop/state_3.txt
-        # sudo reboot
+        sudo reboot
 }
 
 state_end(){
