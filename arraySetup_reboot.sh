@@ -20,37 +20,38 @@
 # fi
 
 SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
 
 state_1(){
         (sudo crontab -l ; echo -e "@reboot su pi -c \"$SCRIPT\" ") | sudo crontab -
         echo -e "Now in State 1!"
         echo -e "Hello State 1!" > ~/Desktop/state_1.txt
-        echo -e "2" | tee /tmp/state.txt
-        # sudo reboot
+        echo -e "2" | tee ${SCRIPTPATH}/doNotDelete.txt
+        sudo reboot
 }
 
 state_2(){
         echo -e "Now in State 2!"
         echo -e "Hello State 2!" > ~/Desktop/state_2.txt
-        echo -e "3" | tee /tmp/state.txt
-        # sudo reboot
+        echo -e "3" | tee ${SCRIPTPATH}/doNotDelete.txt
+        sudo reboot
 }
 
 state_3(){
         echo -e "Now in State 3!"
         echo -e "Hello State 3!" > ~/Desktop/state_3.txt
-        echo -e "4" | tee /tmp/state.txt
-        # sudo reboot
+        echo -e "4" | tee ${SCRIPTPATH}/doNotDelete.txt
+        sudo reboot
 }
 
 state_end(){
         sudo crontab -l | grep -v "su pi -c \"$SCRIPT\"" | sudo crontab -
         echo -e "Thank you for Participating!"
         echo -e "Finished State, Please Delete This File" > ~/Desktop/end.txt
-        echo -e "end" | tee /tmp/state.txt
-        rm ~/Desktop/state_1.txt
-        rm ~/Desktop/state_2.txt
-        rm ~/Desktop/state_3.txt
+        echo -e "end" | tee ${SCRIPTPATH}/doNotDelete.txt
+        # rm ~/Desktop/state_1.txt
+        # rm ~/Desktop/state_2.txt
+        # rm ~/Desktop/state_3.txt
 }
 
 state_restart(){
@@ -58,10 +59,10 @@ state_restart(){
 would you like to restart the installation? (y/n) \n"
         read userConfirmation
         if [ "$userConfirmation" = "y" ] ; then
-                rm /tmp/state.txt
+                rm ${SCRIPTPATH}/doNotDelete.txt
                 echo -e "\nPlease rerun the script again :D"
         elif [ "$userConfirmation" = "n" ] ; then
-                echo -e "The file /tmp/state.txt is still in the hardware"
+                echo -e "The file ${SCRIPTPATH}/doNotDelete.txt is still in the hardware"
                 echo -e "This is to prevent unnecessary installation for stability concerns"
                 echo -e "Thank you for your kiddy understanding! \n"
         else
@@ -70,11 +71,11 @@ would you like to restart the installation? (y/n) \n"
 }
 
 # Create Temporary File for Installation State
-if [[ ! -f "/tmp/state.txt" ]] ; then
-        echo -e "1" | tee /tmp/state.txt
+if [[ ! -f "${SCRIPTPATH}/doNotDelete.txt" ]] ; then
+        echo -e "1" | tee ${SCRIPTPATH}/doNotDelete.txt
         STATE_NUM=1
 else
-        STATE_NUM=$(cat /tmp/state.txt)
+        STATE_NUM=$(cat ${SCRIPTPATH}/doNotDelete.txt)
 fi
 
 # Go Through Installation Steps
