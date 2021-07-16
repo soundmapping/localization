@@ -19,7 +19,10 @@
     
 # fi
 
+SCRIPT=$(readlink -f "$0")
+
 state_1(){
+        (sudo crontab -l ; echo -e "@reboot su pi -c \"$SCRIPT\" ") | sudo crontab -
         echo -e "Now in State 1!"
         echo -e "Hello State 1!" > ~/Desktop/state_1.txt
         # sudo reboot
@@ -38,6 +41,7 @@ state_3(){
 }
 
 state_end(){
+        sudo crontab -l | grep -v "su pi -c \"$SCRIPT\"" | sudo crontab -
         echo -e "Thank you for Participating!"
         echo -e "Finished State, Please Delete This File" > ~/Desktop/end.txt
         rm ~/Desktop/state_1.txt
