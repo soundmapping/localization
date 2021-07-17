@@ -21,6 +21,12 @@
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
+INTERNET_STAT=1
+
+check_internet(){
+        ping -q -w 1 -c 1 8.8.8.8 &> /dev/null \
+        && INTERNET_STAT=0 || INTERNET_STAT=1
+}
 
 state_1(){
         (sudo crontab -l ; echo -e "@reboot su pi -c \"$SCRIPT\" ") | sudo crontab -
@@ -32,14 +38,28 @@ state_1(){
 
 state_2(){
         echo -e "Now in State 2!"
-        echo -e "Hello State 2!" > ~/Desktop/state_2.txt
+        for count in {1..50}; do 
+        check_internet()
+                if [ $INTERNET_STAT = 0 ]; then
+                        break
+                fi
+        done
+        echo -e "Hello State 2! Internet Status = $INTERNET_STAT " > ~/Desktop/state_2.txt
         echo -e "3" | tee ${SCRIPTPATH}/doNotDelete.txt
         sudo reboot
 }
 
 state_3(){
         echo -e "Now in State 3!"
-        echo -e "Hello State 3!" > ~/Desktop/state_3.txt
+
+        for count in {1..50}; do 
+        check_internet()
+                if [ $INTERNET_STAT = 0 ]; then
+                        break
+                fi
+        done
+
+        echo -e "Hello State 3! Internet Status = $INTERNET_STAT " > ~/Desktop/state_3.txt
         echo -e "4" | tee ${SCRIPTPATH}/doNotDelete.txt
         sudo reboot
 }
