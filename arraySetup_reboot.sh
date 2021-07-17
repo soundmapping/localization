@@ -23,23 +23,55 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 INTERNET_STAT=1
 
-setup_wlan0(){
-while true; do
-    # testing...
-    LC_ALL=C nmcli -t -f DEVICE,STATE dev | grep -q "^wlan0:connected$"
-    if [ $? -eq 0 ]; then
-        break
-    else
-        # not connected, sleeping for a second
-        sleep 1
-    fi
-done
-}
+# setup_wlan0(){
+# while true; do
+#     # testing...
+#     LC_ALL=C nmcli -t -f DEVICE,STATE dev | grep -q "^wlan0:connected$"
+#     if [ $? -eq 0 ]; then
+#         break
+#     else
+#         # not connected, sleeping for a second
+#         sleep 1
+#     fi
+# done
+# }
 
 check_internet(){
         ping -q -w 1 -c 1 8.8.8.8 &> /dev/null \
         && INTERNET_STAT=0 || INTERNET_STAT=1
 }
+
+function check_online
+{
+    netcat -z -w 5 8.8.8.8 53 && echo 1 || echo 0
+}
+
+# Initial check to see if we are online
+IS_ONLINE=check_online
+# How many times we should check if we're online - this prevents infinite looping
+MAX_CHECKS=6
+# Initial starting value for checks
+CHECKS=0
+
+# Loop while we're not online.
+while [ $IS_ONLINE -eq 0 ]; do
+    # We're offline. Sleep for a bit, then check again
+    echo -e "Waiting for online..." | tee -a ~/Desktop/logs.txt
+    sleep 10;
+    IS_ONLINE=check_online
+
+    CHECKS=$[ $CHECKS + 1 ]
+    if [ $CHECKS -gt $MAX_CHECKS ]; then
+        echo -e "Connected!" | tee -a ~/Desktop/logs.txt
+        break
+    fi
+done
+
+if [ $IS_ONLINE -eq 0 ]; then
+    # We never were able to get online. Kill script.
+    exit 1
+fi
+
 
 state_1(){
         (sudo crontab -l ; echo -e "@reboot su pi -c \"$SCRIPT\" ") | sudo crontab -
@@ -51,7 +83,7 @@ state_1(){
 
 state_2(){
         echo -e "Now in State 2!"
-        setup_wlan0
+        # setup_wlan0
         for count in {1..50}; do 
         check_internet
                 if [ $INTERNET_STAT = 0 ]; then
@@ -65,7 +97,7 @@ state_2(){
 
 state_3(){
         echo -e "Now in State 3!"
-        setup_wlan0
+        # setup_wlan0
         for count in {1..50}; do 
         check_internet
                 if [ $INTERNET_STAT = 0 ]; then
