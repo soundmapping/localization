@@ -23,6 +23,19 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 INTERNET_STAT=1
 
+setup_wlan0(){
+while true; do
+    # testing...
+    LC_ALL=C nmcli -t -f DEVICE,STATE dev | grep -q "^wlan0:connected$"
+    if [ $? -eq 0 ]; then
+        break
+    else
+        # not connected, sleeping for a second
+        sleep 1
+    fi
+done
+}
+
 check_internet(){
         ping -q -w 1 -c 1 8.8.8.8 &> /dev/null \
         && INTERNET_STAT=0 || INTERNET_STAT=1
@@ -38,8 +51,9 @@ state_1(){
 
 state_2(){
         echo -e "Now in State 2!"
+        setup_wlan0
         for count in {1..50}; do 
-        check_internet()
+        check_internet
                 if [ $INTERNET_STAT = 0 ]; then
                         break
                 fi
@@ -51,9 +65,9 @@ state_2(){
 
 state_3(){
         echo -e "Now in State 3!"
-
+        setup_wlan0
         for count in {1..50}; do 
-        check_internet()
+        check_internet
                 if [ $INTERNET_STAT = 0 ]; then
                         break
                 fi
