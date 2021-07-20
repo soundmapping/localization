@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 # CSE4223-ODAS will be installed in /home/pi/odas
 
 import subprocess as p
@@ -22,6 +20,7 @@ rclone copy /home/pi/odas/recordings/SST RaspberryPi:/ODAS/logs{0}/SST
 rclone copy /home/pi/odas/recordings/SSL RaspberryPi:/ODAS/logs{0}/SSL
 rclone copy /home/pi/odas/recordings/separated RaspberryPi:/ODAS/recordings{0}/separated
 rclone copy /home/pi/odas/recordings/postfiltered RaspberryPi:/ODAS/recordings{0}/postfiltered
+rclone copy /home/pi/odas/recordings/pureRaw RaspberryPi:/ODAS/recordings{0}/pureRaw
 '''.format(arrayInd))
 
 # Create IPupload.sh based on array index
@@ -50,7 +49,7 @@ p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
 
 # create recordings folder
 p.run(["mkdir","recordings"],cwd="/home/pi/odas")
-p.run(["mkdir","SST","SSL","separated","postfiltered","raw"],cwd="/home/pi/odas/recordings") 
+p.run(["mkdir","SST","SSL","separated","postfiltered","pureRaw"],cwd="/home/pi/odas/recordings") 
 
 # reboot
 p.run(["sudo","reboot"])
