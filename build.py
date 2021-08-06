@@ -37,13 +37,19 @@ rclone copy /home/pi/odas/IP{0}.log RaspberryPi:/ODAS
 # Save arrayInd into a file
 with open("/home/pi/odas/arrayInfo.txt","w") as f:
     f.writelines(arrayInd)
+    # f.write(str(arrayInd))
 
 # Make bash scripts executables, set up crontab, set up rclone, and copy files to their working directory
 p.run(["sudo","chmod","+x","cleanup.sh","filemanager.sh","startup.sh","IPupload.sh","backup.sh"],cwd=wd)
 p.run(["sudo","crontab","crontab"],cwd=wd)
 p.run(["cp","backup.sh","cleanup.sh","crontab","filemanager.sh","IPupload.sh","rclone.conf","startup.sh","/home/pi/odas"],cwd=wd)
 p.run(["mkdir","matrix-demo"],cwd="/home/pi/odas/config")
+
+# Updated config files
 p.run(["cp","matrix_creator_local.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
+p.run(["cp","matrix_creator_wRaw.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
+p.run(["cp","matrix_creator_wRaw_dev6.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
+
 p.run(["cp","-r","python","/home/pi/odas"],cwd=wd)
 p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
 

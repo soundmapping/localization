@@ -30,8 +30,9 @@ arrayAppendix = "_" + arrayInd
 wd = "/home/pi/odas/bin"
 configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 
-if arrayInd == 6 : # Only Applies to Device 6 because of Hardware Interface
+if int(arrayInd) == 6 : # Only Applies to Device 6 because of Hardware Interface
     configDir = "../config/matrix-demo/matrix_creator_wRaw_dev6.cfg"
+    print("Using Array 6 :D \n")
 
 # start the program at a 5-minute mark, run countdown()
 countdown5()
@@ -40,7 +41,10 @@ countdown5()
 while True:  
     try:
         # start odaslive
-        print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting a new recording session")
+        startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting a new recording session"
+        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            f.write(startStr)
+        print(startStr)
         p2 = Popen(["./odaslive", "-vc", configDir],
                    cwd=wd,
                    universal_newlines=True)
@@ -49,7 +53,11 @@ while True:
         # end odaslive
         p2.send_signal(signal.SIGINT)
         p2.wait()
-        print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended")
+
+        endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended"
+        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            f.write(endStr)
+        print(endStr)
         
         # obtain the last access and modified time of raw files
         atime = os.path.getatime("/home/pi/odas/recordings/separated/separated.raw")
@@ -90,13 +98,16 @@ while True:
         
         # upload SST log
         Popen(["rclone","copy",cSSTName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SST"])
-
+        print("Uploaded SST logs :D ")
+        
         # if log file contains no data other than 0, delete raw files 
         key = "not useful"
         if flag == key:
             os.remove("/home/pi/odas/recordings/SSL/SSL.log")
             os.remove("/home/pi/odas/recordings/separated/separated.raw")
             os.remove("/home/pi/odas/recordings/postfiltered/postfiltered.raw")
+            os.remove("/home/pi/odas/recordings/allChannels.raw")
+            print("\n Files has been removed or flushed")
         else:          
             os.rename("/home/pi/odas/recordings/SSL/SSL.log", cSSLName)
             os.rename("/home/pi/odas/recordings/separated/separated.raw", sepName)
@@ -107,7 +118,19 @@ while True:
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
             Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+            print("\n Files has been uploaded")
             
+        # # Test
+        # os.rename("/home/pi/odas/recordings/SSL/SSL.log", cSSLName)
+        # os.rename("/home/pi/odas/recordings/separated/separated.raw", sepName)
+        # os.rename("/home/pi/odas/recordings/postfiltered/postfiltered.raw", posName)
+        # os.rename("/home/pi/odas/recordings/pureRaw/allChannels.raw", rawName)
+        # # upload SSL, separated, postfiltered, pure raw files
+        # Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
+        # Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
+        # Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
+        # Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+        # print("\n Files has been uploaded")
 
 
         print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished")
@@ -118,6 +141,7 @@ while True:
     except KeyboardInterrupt:
         p2.send_signal(signal.SIGINT)
         p2.wait()
+        print("Interrupted +.+ ")
         break
 print("Recording ended")
 
