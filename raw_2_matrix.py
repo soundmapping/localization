@@ -19,8 +19,34 @@ WHERE `Time In Seconds` >= {2} and `Time In Seconds`< {3}
 '''
 # RAW_TABLE_QUERY = "SELECT *, ((`Time In Seconds` DIV {0}) * {0}) AS quantized_time from raw where `Time In Seconds` >= {2} and `Time In Seconds`< {3}"
 # Might change this later
+# GROUP_BY_QUERY ='''
+# INSERT INTO multiDimMatrix5
+# select
+#   derivedTable.quantized_time,
+#   sum(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) as X_0_0,
+#   sum(case when derivedTable.`Microphone Number` = 0 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 0 then derivedTable.Y_0 end) as Y_0_0,
+#   sum(case when derivedTable.`Microphone Number` = 0 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 0 then derivedTable.Z_0 end) as Z_0_0,
+#   sum(case when derivedTable.`Microphone Number` = 1 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 1 then derivedTable.X_0 end) as X_0_1,
+#   sum(case when derivedTable.`Microphone Number` = 1 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 1 then derivedTable.Y_0 end) as Y_0_1,
+#   sum(case when derivedTable.`Microphone Number` = 1 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 1 then derivedTable.Z_0 end) as Z_0_1,
+#   sum(case when derivedTable.`Microphone Number` = 2 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 2 then derivedTable.X_0 end) as X_0_2,
+#   sum(case when derivedTable.`Microphone Number` = 2 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 2 then derivedTable.Y_0 end) as Y_0_2,
+#   sum(case when derivedTable.`Microphone Number` = 2 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 2 then derivedTable.Z_0 end) as Z_0_2,
+#   sum(case when derivedTable.`Microphone Number` = 3 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 3 then derivedTable.X_0 end) as X_0_3,
+#   sum(case when derivedTable.`Microphone Number` = 3 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 3 then derivedTable.Y_0 end) as Y_0_3,
+#   sum(case when derivedTable.`Microphone Number` = 3 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 3 then derivedTable.Z_0 end) as Z_0_3,
+#   sum(case when derivedTable.`Microphone Number` = 4 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 4 then derivedTable.X_0 end) as X_0_4,
+#   sum(case when derivedTable.`Microphone Number` = 4 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 4 then derivedTable.Y_0 end) as Y_0_4,
+#   sum(case when derivedTable.`Microphone Number` = 4 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 4 then derivedTable.Z_0 end) as Z_0_4,
+#   sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.X_0 end) as X_0_5,
+#   sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.Y_0 end) as Y_0_5,
+#   sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) as Z_0_5
+# from ({0}) as derivedTable
+# group by quantized_time
+# '''
+
 GROUP_BY_QUERY ='''
-INSERT INTO multiDimMatrix5
+INSERT INTO multiDimMatrix8
 select
   derivedTable.quantized_time,
   sum(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 0 then derivedTable.X_0 end) as X_0_0,
@@ -40,7 +66,13 @@ select
   sum(case when derivedTable.`Microphone Number` = 4 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 4 then derivedTable.Z_0 end) as Z_0_4,
   sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.X_0 end) as X_0_5,
   sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.Y_0 end) as Y_0_5,
-  sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) as Z_0_5
+  sum(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 5 then derivedTable.Z_0 end) as Z_0_5,
+  sum(case when derivedTable.`Microphone Number` = 6 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 6 then derivedTable.X_0 end) as X_0_6,
+  sum(case when derivedTable.`Microphone Number` = 6 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 6 then derivedTable.Y_0 end) as Y_0_6,
+  sum(case when derivedTable.`Microphone Number` = 6 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 6 then derivedTable.Z_0 end) as Z_0_6,
+  sum(case when derivedTable.`Microphone Number` = 7 then derivedTable.X_0 end) / count(case when derivedTable.`Microphone Number` = 7 then derivedTable.X_0 end) as X_0_7,
+  sum(case when derivedTable.`Microphone Number` = 7 then derivedTable.Y_0 end) / count(case when derivedTable.`Microphone Number` = 7 then derivedTable.Y_0 end) as Y_0_7,
+  sum(case when derivedTable.`Microphone Number` = 7 then derivedTable.Z_0 end) / count(case when derivedTable.`Microphone Number` = 7 then derivedTable.Z_0 end) as Z_0_7
 from ({0}) as derivedTable
 group by quantized_time
 '''

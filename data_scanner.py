@@ -7,10 +7,12 @@ import datetime
 mic_number = sys.argv[1]
 
 str_com_pre = 'rclone deletefile RaspberryPi:ODAS/'
-gdrive = "/Users/odas2/Google Drive/My Drive/ODAS/logs"
+# gdrive = "/Users/odas2/Google Drive/My Drive/ODAS/logs"
+gdrive = "/Volumes/GoogleDrive/My Drive/ODAS/logs"
+pythonCommand = "/opt/anaconda3/envs/soundmapping/bin/python3"
 
 log_files = glob.glob(gdrive+str(mic_number)+'/SST/*.log')
-destination = gdrive + str(mic_number) + '/SST/Processing'
+destination = gdrive + str(mic_number) + '/SST/Processing/'
 
 if(not log_files):
     print(datetime.datetime.now(), ", There are no log files to move. Bye!")
@@ -29,6 +31,6 @@ for i in log_files:
         continue
     # update the env path
     file_path = file_path.replace(' ', '\ ')
-    com = '/opt/anaconda3/envs/soundmapping/bin/python3 ~/Desktop/SoundMapping/server/localization/data_uploader.py '+file_path+' >> ~/Desktop/SoundMapping/server/localization/output/data_uploader_out_'+str(mic_number)+'.txt 2>&1'
+    com = pythonCommand + ' ~/Desktop/SoundMapping/server_branch/localization/data_uploader.py '+file_path+' >> ~/Desktop/SoundMapping/server_branch/localization/output/data_uploader_out_'+str(mic_number)+'.txt 2>&1'
     val = os.system(com)
     print(datetime.datetime.now(), ',',val)
