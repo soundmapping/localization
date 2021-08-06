@@ -32,7 +32,6 @@ configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 
 if int(arrayInd) == 6 : # Only Applies to Device 6 because of Hardware Interface
     configDir = "../config/matrix-demo/matrix_creator_wRaw_dev6.cfg"
-    print("Using Array 6 :D \n")
 
 # start the program at a 5-minute mark, run countdown()
 countdown5()
@@ -98,7 +97,6 @@ while True:
         
         # upload SST log
         Popen(["rclone","copy",cSSTName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SST"])
-        print("Uploaded SST logs :D ")
         
         # if log file contains no data other than 0, delete raw files 
         key = "not useful"
@@ -118,20 +116,6 @@ while True:
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
             Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
-            print("\n Files has been uploaded")
-            
-        # # Test
-        # os.rename("/home/pi/odas/recordings/SSL/SSL.log", cSSLName)
-        # os.rename("/home/pi/odas/recordings/separated/separated.raw", sepName)
-        # os.rename("/home/pi/odas/recordings/postfiltered/postfiltered.raw", posName)
-        # os.rename("/home/pi/odas/recordings/pureRaw/allChannels.raw", rawName)
-        # # upload SSL, separated, postfiltered, pure raw files
-        # Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
-        # Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
-        # Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
-        # Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
-        # print("\n Files has been uploaded")
-
 
         print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished")
         # wait until the next 5-minute mark
