@@ -30,7 +30,7 @@ arrayAppendix = "_" + arrayInd
 wd = "/home/pi/odas/bin"
 configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 
-if int(arrayInd) == 6 : # Only Applies to Device 6 because of Hardware Interface
+if int(arrayInd) == 5 : # Only Applies to Device 6 because of Hardware Interface
     configDir = "../config/matrix-demo/matrix_creator_wRaw_dev6.cfg"
 
 # start the program at a 5-minute mark, run countdown()
@@ -40,7 +40,7 @@ countdown5()
 while True:  
     try:
         # start odaslive
-        startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting a new recording session"
+        startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting a new recording session \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
             f.write(startStr)
         print(startStr)
@@ -53,7 +53,7 @@ while True:
         p2.send_signal(signal.SIGINT)
         p2.wait()
 
-        endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended"
+        endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
             f.write(endStr)
         print(endStr)
@@ -115,9 +115,13 @@ while True:
             Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
-            Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+            # Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
 
-        print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished")
+        cleanStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished \n"
+        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            f.write(cleanStr)
+        print(cleanStr)
+
         # wait until the next 5-minute mark
         print("Waiting to go into the next cycle...")
         countdown5()
