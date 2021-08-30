@@ -7,8 +7,8 @@ class DatabaseAPI:
     
     def __init__(self):
         """database engine object used to access database"""
-        self.database_engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
-                               .format(user="root",
+        self.database_engine = create_engine("mysql+pymysql://{user}:{pw}@soundmapping.local/{db}"
+                               .format(user="soundmapping",
                                        pw="odasodas",
                                        db="soundmapping"))
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
-sys.path.append('/home/ardelalegre/SoundMapping/Database/Tables')
+sys.path.append('../../Database/Tables')
 from MultiDimMatrixService import MultiDimMatrixService
 from RawService import RawService
 from Tools import *
@@ -53,6 +53,12 @@ def get_time_interval_matrix_data(start_time, end_time):
     
     dataPoints = dataObj.fetchall()
     df = pd.DataFrame(dataPoints)
+
+    # Debugging Purposes
+    # print("printing")
+    # print("dataPoints = ", dataPoints)
+    # print("df = ", df)
+
     df.columns = dataPoints[0].keys() 
     df = df.fillna(value=np.nan)
     
@@ -77,5 +83,8 @@ def extract_all_active_observations(interval_matrix_data, array_indices):
         if not any(np.isnan(selected_obs[i,:])) and not any(selected_obs[i,:]==0):
             cleaned_data.append(selected_obs[i,:])
             ind.append(i)
-    selected_raw_obs = interval_matrix_data[ind,:]        
+    selected_raw_obs = interval_matrix_data[ind,:]   
+    print("selected_raw_obs Shape: ", selected_raw_obs.shape)   
+    print("cleaned_data list shape: ", len(cleaned_data))  
+    # return cleaned_data, selected_raw_obs
     return  np.vstack(cleaned_data), selected_raw_obs

@@ -1,6 +1,6 @@
 """API for multiDimMatrix table"""
 import sys
-sys.path.append('/home/ardelalegre/SoundMapping/Database')
+sys.path.append('../')
 from DatabaseAPI import DatabaseAPI
 
 class MultiDimMatrixService:
@@ -21,7 +21,7 @@ class MultiDimMatrixService:
         
         query = '''
         SELECT *
-        FROM multiDimMatrix
+        FROM multiDimMatrix5
         WHERE quantized_time >= {0} AND quantized_time < {1}
         '''.format(start_time, end_time)
         

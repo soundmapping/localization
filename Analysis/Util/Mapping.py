@@ -5,7 +5,7 @@ computes linear transformtion matrix that maps DOAs to room space coordinates
 
 @param list points_list - a list of cleaned DOAs. Each element in the list contains measurements of one point
 @param numpyArray coordinates - an array of room space coordinates that are stored in the same order as points in points_list  
-@param int dim - mapping dimension
+@param int dim - mapping dimension (Room Space, 2D or 3D)
 
 @return numpyArray B - linear transformation matrix
 @return numpyArray R_mean - the mean of room space coordinates
@@ -27,6 +27,8 @@ def generate_linear_transform_matrix(points_list, coordinates, dim):
     # calculating moore penrose inverse
     D_inv = np.linalg.pinv(D-D_mean) 
     # obtaining linear transformation matrix
+    print("R = ", R)
+    print("R_mean: ", R_mean)
     B = (R - R_mean) @ D_inv 
     return B, R_mean, D_mean, D
 

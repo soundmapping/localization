@@ -2,7 +2,7 @@ from Models import *
 from numpy import linalg as LA
 import numpy as np
 import sys
-sys.path.append('/home/ardelalegre/SoundMapping/Analysis/Util')
+sys.path.append('../../Analysis/Util')
 
 """
 computes the eigen vectors and eigen values from given data

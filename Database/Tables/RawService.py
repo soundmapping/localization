@@ -1,6 +1,6 @@
 """API for raw table"""
 import sys
-sys.path.append('/home/ardelalegre/SoundMapping/Database')
+sys.path.append('../')
 from DatabaseAPI import DatabaseAPI
 
 class RawService:
