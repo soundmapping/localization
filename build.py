@@ -49,6 +49,7 @@ p.run(["mkdir","matrix-demo"],cwd="/home/pi/odas/config")
 p.run(["cp","matrix_creator_local.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
 p.run(["cp","matrix_creator_wRaw.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
 p.run(["cp","matrix_creator_wRaw_dev6.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
+p.run(["cp","matrix_creator_offline.cfg","/home/pi/odas/config/matrix-demo"],cwd=wd)
 
 p.run(["cp","-r","python","/home/pi/odas"],cwd=wd)
 p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
