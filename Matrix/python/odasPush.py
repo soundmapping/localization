@@ -62,8 +62,12 @@ while True:
         print(startStr)
         p2 = Popen(["./odaslive", "-vc", configDir],
                    cwd=wd,
-                   universal_newlines=True)
+                   universal_newlines=True,
+                   stdout=PIPE)
         p2.wait()   # Wait for odaslive to finish
+        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            f.write(p2.communicate()[0])
+        # print(p2.communicate()[0])
 
         endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
@@ -84,7 +88,8 @@ while True:
         date0, time0 = str(aT).split()
         time0 = time0.split('.')[0]
 
-        timeStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Timestamp Retrieved \n"
+        timeStr = "Time is " + str(datetime.fromtimestamp(timer.time())) \
+            + ". Timestamp " + timeArray + " Retrieved \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
             f.write(timeStr)
         print(timeStr)
