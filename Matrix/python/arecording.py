@@ -55,8 +55,8 @@ while True:
         p2 = Popen(["arecord","-v", "-D", hardwareInfo,
             "-t", typeFile, "-r", sampleRate, "-f", sampleFormat,
             "-c", numChannels, outFile])
-        # leave 10s for the remaining process and clean up
-        timer.sleep(290)
+        # leave 20s for the remaining process and clean up
+        timer.sleep(280)
         # end odaslive
         p2.send_signal(signal.SIGINT)
         p2.wait()

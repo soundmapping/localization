@@ -106,7 +106,10 @@ while True:
         # rename cleaned.log and remove SST.log
         os.rename("/home/pi/odas/recordings/SST/cleaned.log", cSSTName)
         os.remove("/home/pi/odas/recordings/SST/SST.log")
-        os.remove(recordedRaw)
+        
+        # Rename recorded file into allChannels (Depend on config file)
+        # os.remove(recordedRaw)
+        os.rename(recordedRaw, "/home/pi/odas/recordings/pureRaw/allChannels.raw")
         
         # upload SST log
         Popen(["rclone","copy",cSSTName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SST"])
@@ -128,7 +131,7 @@ while True:
             Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
-            # Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+            Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
 
         cleanStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
