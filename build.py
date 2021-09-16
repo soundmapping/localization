@@ -57,6 +57,7 @@ p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
 # create recordings folder
 p.run(["mkdir","recordings"],cwd="/home/pi/odas")
 p.run(["mkdir","SST","SSL","separated","postfiltered","pureRaw"],cwd="/home/pi/odas/recordings") 
+p.run(["mkdir","timeLog"],cwd="/home/pi/odas/recordings/pureRaw")
 
 # reboot
 p.run(["sudo","reboot"])

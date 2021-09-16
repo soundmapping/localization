@@ -54,12 +54,17 @@ while True:
         print(startStr)
         p2 = Popen(["arecord","-v", "-D", hardwareInfo,
             "-t", typeFile, "-r", sampleRate, "-f", sampleFormat,
-            "-c", numChannels, outFile])
+            "-c", numChannels, outFile],
+            universal_newlines=True,
+            stdout=PIPE)
         # leave 20s for the remaining process and clean up
         timer.sleep(280)
         # end odaslive
         p2.send_signal(signal.SIGINT)
         p2.wait()
+
+        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            f.write(p2.communicate()[0])
 
         endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". arecord ended \n"
         with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
@@ -75,6 +80,11 @@ while True:
         date0, time0 = str(aT).split()
         time0 = time0.split('.')[0]
         timeArray = date0 + "_" + time0 + arrayAppendix
+        timeLog = "/home/pi/odas/recordings/pureRaw/timeLog/" + timeArray + ".txt"
+
+        with open(timeLog, "a") as f :
+            f.write(aT)
+            f.write(mT)
 
         with open("/home/pi/odas/recordings/pureRaw/timeStamp.txt", "w") as f :
             f.write(timeArray)
