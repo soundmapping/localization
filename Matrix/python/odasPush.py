@@ -169,8 +169,11 @@ while True:
             Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
-            Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
-
+            upRaw = Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+            
+            # with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            #     f.write(upRaw.communicate()[0])
+            
             uploadedStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Files uploaded to GDrive \n"
             with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
                 f.write(uploadedStr)
