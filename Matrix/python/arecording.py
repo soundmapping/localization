@@ -27,16 +27,19 @@ f.close()
 arrayAppendix = "_" + arrayInd
 
 # First set the working directory to /home/pi/odas/bin
-wd = "/home/pi/odas/recordings/pureRaw/"
+wd = "/home/pi/odas/recordings/arecordLog/"
 configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 
 # Recording Details
 hardwareInfo = "hw:2,0"
 sampleFormat = "S16_LE"
-sampleRate = "44100"
+sampleRate = "32000"
 numChannels = "8"
 typeFile = "raw"
+
 outFile = wd + "recording.raw"
+recordingLog = "/home/pi/odas/recordings/arecordLog/recording.log"
+recordedRaw = "/home/pi/odas/recordings/pureRaw/recorded.raw"
 
 # if int(arrayInd) == 5 : # Only Applies to Device 6 because of Hardware Interface
 #     hardwareInfo = "hw:3,0"
@@ -49,7 +52,7 @@ while True:
     try:
         # start odaslive
         startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting arecord command \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(startStr)
         print(startStr)
         p2 = Popen(["arecord","-v", "-D", hardwareInfo,
@@ -63,33 +66,41 @@ while True:
         p2.send_signal(signal.SIGINT)
         p2.wait()
 
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
-            f.write(p2.communicate()[0])
+        # print("p2.communicate = ", type(p2.communicate()))
+        # print("Accessing index 0 = ", type(p2.communicate()[0]))
+        p2out, p2err = p2.communicate()
+
+        with open(recordingLog, "a") as f :
+            arecordStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + \
+                str(p2out) + ", \n Errors found (blank=None): " + str(p2err) + "\n" 
+            f.write(arecordStr)
 
         endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". arecord ended \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(endStr)
         print(endStr)
         
         # obtain the last access and modified time of raw files
-        atime = os.path.getatime("/home/pi/odas/recordings/pureRaw/recording.raw")
-        mtime = os.path.getmtime("/home/pi/odas/recordings/pureRaw/recording.raw")
+        atime = os.path.getatime(outFile)
+        mtime = os.path.getmtime(outFile)
         aT = datetime.fromtimestamp(atime)
         mT = datetime.fromtimestamp(mtime)
         
         date0, time0 = str(aT).split()
         time0 = time0.split('.')[0]
         timeArray = date0 + "_" + time0 + arrayAppendix
-        timeLog = "/home/pi/odas/recordings/pureRaw/timeLog/" + timeArray + ".txt"
+        timeLog = "/home/pi/odas/recordings/arecordLog/aTmT.txt"
 
-        with open(timeLog, "a") as f :
-            f.write(aT)
-            f.write(mT)
+        with open(timeLog, "w") as f :
+            f.write(str(aT))
+            f.write("\n")
+            f.write(str(mT))
 
         with open("/home/pi/odas/recordings/pureRaw/timeStamp.txt", "w") as f :
             f.write(timeArray)
 
-        Popen(["mv", outFile, wd+"recorded.raw"]) # File has been fully recorded
+        Popen(["mv", outFile, recordedRaw]) # File has been fully recorded
+        # Popen(["rclone","copy",timeLog,"RaspberryPi:/ODAS/recordings"+arrayInd+"/arecordLog"])
 
         # wait until the next 5-minute mark
         print("Waiting to go into the next cycle...")
@@ -98,7 +109,13 @@ while True:
     except KeyboardInterrupt:
         p2.send_signal(signal.SIGINT)
         p2.wait()
+
+        with open(recordingLog, "a") as f :
+            f.write("arecord: Interrupted +.+ ")
         print("Interrupted +.+ ")
         break
+
+with open(recordingLog, "a") as f :
+    f.write("arecord: Recording ended")
 print("Recording ended")
 

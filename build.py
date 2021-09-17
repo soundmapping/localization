@@ -21,6 +21,7 @@ rclone copy /home/pi/odas/recordings/SSL RaspberryPi:/ODAS/logs{0}/SSL
 rclone copy /home/pi/odas/recordings/separated RaspberryPi:/ODAS/recordings{0}/separated
 rclone copy /home/pi/odas/recordings/postfiltered RaspberryPi:/ODAS/recordings{0}/postfiltered
 rclone copy /home/pi/odas/recordings/pureRaw RaspberryPi:/ODAS/recordings{0}/pureRaw
+rclone copy /home/pi/odas/recordings/arecordLog RaspberryPi:/ODAS/recordings{0}/arecordLog
 '''.format(arrayInd))
 
 # Create IPupload.sh based on array index
@@ -57,7 +58,7 @@ p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
 # create recordings folder
 p.run(["mkdir","recordings"],cwd="/home/pi/odas")
 p.run(["mkdir","SST","SSL","separated","postfiltered","pureRaw"],cwd="/home/pi/odas/recordings") 
-p.run(["mkdir","timeLog"],cwd="/home/pi/odas/recordings/pureRaw")
+p.run(["mkdir","arecordLog"],cwd="/home/pi/odas/recordings")
 
 # reboot
 p.run(["sudo","reboot"])

@@ -19,6 +19,17 @@ def countdown5():
     print("Time is " + str(t1) + ". Going to sleep now...")
     timer.sleep(sleepTime)
     print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Waking up now...")
+
+# Returns aT & mT from file
+# filename (string): textfile containing aT & mT (seperated by \n)
+# aT: access time, mT: modified time
+def read_aT_mT(filename) :
+    f = open(filename)
+    aT = f.readline()
+    mT = f.readline()
+    f.close()
+
+    return aT, mT
     
 # Find the array Index
 f = open("/home/pi/odas/arrayInfo.txt","r")
@@ -39,6 +50,7 @@ configDir = "../config/matrix-demo/matrix_creator_offline.cfg"
 
 # File Location Details
 recordedRaw = "/home/pi/odas/recordings/pureRaw/recorded.raw"
+recordingLog = "/home/pi/odas/recordings/arecordLog/recording.log"
 
 # start the program at a 5-minute mark, run countdown()
 countdown5()
@@ -47,7 +59,7 @@ countdown5()
 while True:  
     if not os.path.isfile(recordedRaw) :
         noFileStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". No Recordings to process yet\n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(noFileStr)
         print(noFileStr)
         print("Waiting to go into the next cycle...")
@@ -57,7 +69,7 @@ while True:
     try:
         # start odaslive
         startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting odaslive offline \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(startStr)
         print(startStr)
         p2 = Popen(["./odaslive", "-vc", configDir],
@@ -65,12 +77,12 @@ while True:
                    universal_newlines=True,
                    stdout=PIPE)
         p2.wait()   # Wait for odaslive to finish
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
-            f.write(p2.communicate()[0])
+        with open(recordingLog, "a") as f :
+            f.write(str(p2.communicate()[0]))
         # print(p2.communicate()[0])
 
         endStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Odaslive ended \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(endStr)
         print(endStr)
 
@@ -80,17 +92,20 @@ while True:
         f.close()
         
         # obtain the last access and modified time of raw files
-        atime = os.path.getatime(recordedRaw)
-        mtime = os.path.getmtime(recordedRaw)
-        aT = datetime.fromtimestamp(atime)
-        mT = datetime.fromtimestamp(mtime)
+        # atime = os.path.getatime(recordedRaw)
+        # mtime = os.path.getmtime(recordedRaw)
+        # aT = datetime.fromtimestamp(atime)
+        # mT = datetime.fromtimestamp(mtime)
+        aT, mT = read_aT_mT("/home/pi/odas/recordings/arecordLog/aTmT.txt")
         
         date0, time0 = str(aT).split()
         time0 = time0.split('.')[0]
+        Popen(["mv", "/home/pi/odas/recordings/arecordLog/aTmT.txt",
+         "/home/pi/odas/recordings/arecordLog/" + timeArray + ".txt"])
 
         timeStr = "Time is " + str(datetime.fromtimestamp(timer.time())) \
             + ". Timestamp " + timeArray + " Retrieved \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(timeStr)
         print(timeStr)
 
@@ -103,7 +118,7 @@ while True:
         flag = p3.communicate(input="/home/pi/odas/recordings/SST/SST.log")[0].strip()
 
         emptyStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Checked for useful data \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(emptyStr)
         print(emptyStr)
         
@@ -132,7 +147,7 @@ while True:
         os.rename(recordedRaw, "/home/pi/odas/recordings/pureRaw/allChannels.raw")
 
         moveStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". recorded.raw -> allChannels.raw \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(moveStr)
         print(moveStr)
         
@@ -140,7 +155,7 @@ while True:
         Popen(["rclone","copy",cSSTName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SST"])
 
         sstStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". SST log successfully uploaded \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(sstStr)
         print(sstStr)
         
@@ -152,7 +167,7 @@ while True:
             os.remove("/home/pi/odas/recordings/postfiltered/postfiltered.raw")
             os.remove("/home/pi/odas/recordings/pureRaw/allChannels.raw")
             rmStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Files has been removed or flushed \n"
-            with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            with open(recordingLog, "a") as f :
                 f.write(rmStr)
             print(rmStr)
             # print("\n Files has been removed or flushed")
@@ -162,25 +177,29 @@ while True:
             os.rename("/home/pi/odas/recordings/postfiltered/postfiltered.raw", posName)
             os.rename("/home/pi/odas/recordings/pureRaw/allChannels.raw", rawName)
             # upload SSL, separated, postfiltered, pure raw files
-            uploadingStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting Rclone to GDrvie \n"
-            with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            uploadingStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting Rclone to GDrive \n"
+            with open(recordingLog, "a") as f :
                 f.write(uploadingStr)
             print(uploadingStr)
             Popen(["rclone","copy",cSSLName,"RaspberryPi:/ODAS/logs"+arrayInd+"/SSL"])
             Popen(["rclone","copy",sepName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["rclone","copy",posName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/postfiltered"])
-            upRaw = Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"])
+            upRaw = Popen(["rclone","copy",rawName,"RaspberryPi:/ODAS/recordings"+arrayInd+"/pureRaw"],
+                stdout=PIPE, stderr=PIPE)
+            upRawOut, upRawErr = upRaw.communicate()
+            upRawStr = "\n Output of Rclone: " + str(upRawOut) + \
+                 "\n Error of Rclone (Blank if None): " + str(upRawErr) + "\n"
             
-            # with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
-            #     f.write(upRaw.communicate()[0])
+            with open(recordingLog, "a") as f :
+                f.write(upRawStr)
             
             uploadedStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Files uploaded to GDrive \n"
-            with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+            with open(recordingLog, "a") as f :
                 f.write(uploadedStr)
             print(uploadedStr)
 
         cleanStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Clean up finished \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(cleanStr)
         print(cleanStr)
 
@@ -192,13 +211,13 @@ while True:
         p2.send_signal(signal.SIGINT)
         p2.wait()
         interruptStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Interrupted +.+  \n"
-        with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+        with open(recordingLog, "a") as f :
             f.write(interruptStr)
         print(interruptStr)
         break
 print("Recording ended")
 
 odasPushStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". OdasPush.py terminated  \n"
-with open("/home/pi/odas/recordings/pureRaw/recording.log", "a") as f :
+with open(recordingLog, "a") as f :
     f.write(odasPushStr)
 print(odasPushStr)
