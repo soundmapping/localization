@@ -5,6 +5,19 @@
 
 import subprocess as p
 
+def usbSetup(arrayInd) :
+    usbLocation = "/media/pi/ARRAY" + arrayInd
+    odasDir = usbLocation + "/ODAS"
+
+    # create ODAS Folder
+    p.run(["mkdir", "ODAS"], cwd=usbLocation)
+    # create logs & recordings folder
+    p.run(["mkdir","logs"+arrayInd, "recordings"+arrayInd],cwd=odasDir)
+    p.run(["mkdir","SST","SSL"],cwd=odasDir+"/logs"+arrayInd)
+    p.run(["mkdir","separated","postfiltered","pureRaw"],cwd=odasDir+"/recordings"+arrayInd) 
+    p.run(["mkdir","arecordLog"],cwd=odasDir+"/recordings"+arrayInd)
+
+
 # Setting up working directory
 wd = "/home/pi/odas/localization/Matrix"
 
@@ -40,6 +53,9 @@ with open("/home/pi/odas/arrayInfo.txt","w") as f:
     f.writelines(arrayInd)
     # f.write(str(arrayInd))
 
+# Create USB Directory
+usbSetup(arrayInd)
+
 # Make bash scripts executables, set up crontab, set up rclone, and copy files to their working directory
 p.run(["sudo","chmod","+x","cleanup.sh","filemanager.sh","startup.sh","IPupload.sh","backup.sh"],cwd=wd)
 p.run(["sudo","crontab","crontab"],cwd=wd)
@@ -59,6 +75,7 @@ p.run(["cp","rclone.conf","/home/pi/.config/rclone"],cwd=wd)
 p.run(["mkdir","recordings"],cwd="/home/pi/odas")
 p.run(["mkdir","SST","SSL","separated","postfiltered","pureRaw"],cwd="/home/pi/odas/recordings") 
 p.run(["mkdir","arecordLog"],cwd="/home/pi/odas/recordings")
+
 
 # reboot
 p.run(["sudo","reboot"])

@@ -5,4 +5,5 @@
 # python3 -u /home/pi/odas/python/watchdog.v1.py &
 
 python3 -u /home/pi/odas/python/arecording.py &
-python3 -u /home/pi/odas/python/odasPush.py &
+python3 -u /home/pi/odas/python/odasUSB.py &
+# python3 -u /home/pi/odas/python/odasPush.py &
