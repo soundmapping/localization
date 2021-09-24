@@ -132,6 +132,9 @@ while True:
             f.write("Start time: " + str(aT) + "\n")
             f.write("End time: " + str(mT))
 
+        # To support NTFS (since ext is not supported in MacOS)
+        timeArray = timeArray.replace(":", "T")
+
         # Specify Timestamp on Recordings and Log Files
         cSSTName = "/home/pi/odas/recordings/SST/cSST_" + timeArray + ".log"
         cSSLName = "/home/pi/odas/recordings/SSL/cSSL_" + timeArray + ".log"
