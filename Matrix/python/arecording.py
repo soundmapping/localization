@@ -41,8 +41,8 @@ outFile = wd + "recording.raw"
 recordingLog = "/home/pi/odas/recordings/arecordLog/recording.log"
 recordedRaw = "/home/pi/odas/recordings/pureRaw/recorded.raw"
 
-# if int(arrayInd) == 5 : # Only Applies to Device 6 because of Hardware Interface
-#     hardwareInfo = "hw:3,0"
+if int(arrayInd) == 7 : # Only Applies to Device 6 because of Hardware Interface
+    hardwareInfo = "hw:3,0"
 
 # start the program at a 5-minute mark, run countdown()
 countdown5()

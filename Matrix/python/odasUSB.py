@@ -166,6 +166,8 @@ while True:
         # if log file contains no data other than 0, delete raw files 
         key = "not useful"
         if flag == key:
+            upRaw = Popen(["cp","-v",rawName,usbLocation+"/ODAS/recordings"+arrayInd+"/pureRaw"],
+                stdout=PIPE, stderr=PIPE)
             os.remove("/home/pi/odas/recordings/SSL/SSL.log")
             os.remove("/home/pi/odas/recordings/separated/separated.raw")
             os.remove("/home/pi/odas/recordings/postfiltered/postfiltered.raw")
