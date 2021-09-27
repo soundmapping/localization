@@ -186,6 +186,7 @@ while True:
                 f.write(uploadingStr)
             print(uploadingStr)
             Popen(["cp", "-v", cSSLName, usbLocation+"/ODAS/logs"+arrayInd+"/SSL"])
+            Popen(["cp", "-v", cSSTName, usbLocation+"/ODAS/logs"+arrayInd+"/SST"])
             Popen(["cp","-v",sepName,usbLocation+"/ODAS/recordings"+arrayInd+"/separated"])
             Popen(["cp","-v",posName,usbLocation+"/ODAS/recordings"+arrayInd+"/postfiltered"])
             upRaw = Popen(["cp","-v",rawName,usbLocation+"/ODAS/recordings"+arrayInd+"/pureRaw"],
