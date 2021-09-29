@@ -52,6 +52,8 @@ usbLocation  = "".join([usbLocation,"/ARRAY0"])
 # recpath is where the script looks for recordings and creates the log folders.
 if len(sys.argv) > 1:
     recpath = sys.argv[1]
+    if recpath[-1] == '/':
+        recpath = recpath[:-1]
 else: 
     # recpath      = usbLocation + "/experiment"
     recpath = "/home/soundmapping/share/test"
@@ -110,6 +112,11 @@ def gen_config(
             # newpath = "".join([target_path , "/recordings", array_idx , "/", keyword , "/" , keyword , "_" , tag , ".raw"])
             print('gen_config : use dummypath for', keyword) # to save disk space
             newpath = "".join([target_path , "/" , keyword , "_dummy.raw"])
+
+        # gen dir if necessary
+        dirname = os.path.dirname(newpath)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
 
         for ii in idx: # replace path in matching lines
             line = lines[ii].split("\"")
