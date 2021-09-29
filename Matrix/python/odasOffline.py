@@ -3,6 +3,7 @@
 # By YiHan Hu & Henrry Gunawan
 
 import os
+import sys
 import time as timer
 from datetime import datetime
 from subprocess import Popen, PIPE
@@ -47,24 +48,21 @@ elif pf == "darwin": # manu macOS
     odasbin = None
 
 usbLocation  = "".join([usbLocation,"/ARRAY0"])
-recpath      = usbLocation + "/noSST"
+if len(sys.argv) > 1:
+    recpath = sys.argv[1]
+else: 
+    # recpath      = usbLocation + "/experiment"
+    recpath = "/home/soundmapping/share/test"
 recordingLog = "./recording.log"
 
 odasConfigTemplate = "./../matrix_creator_offline.cfg"
-odasConfigTmp = "./tmp_matrix_creator_offline.cfg"
-
-# Recording Details
-hardwareInfo = "hw:2,0"
-sampleRate   = "44100"
-numChannels  = "8"
-typeFile     = "raw"
-outFile      = "recording.raw"
+odasConfigTmp = recpath+"/tmp_matrix_creator_offline.cfg" # absolute path needed
 
 # find all raw recursively and append in raw_files
 raw_files = []
 for dirpath, subdirs, files in os.walk(recpath):
     for x in files:
-        if x.endswith(".raw"):
+        if x.endswith(".raw") and not np.any([key in x for key in ['postfiltered','separated']]):
             raw_files.append(os.path.join(dirpath, x))
 print("found these files in ", recpath)
 [print(ff) for ff in raw_files]
@@ -128,8 +126,8 @@ def gen_config(
     return rawpath, sslpath, sstpath, seppath, pflpath
 
 # single file test 
-raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
-gen_config(raw_input_filepath,"/Volumes/ARRAY0/noSST/",verbose=True);
+# raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
+# gen_config(raw_input_filepath,"/Volumes/ARRAY0/noSST/",verbose=True);
 
 # test cfg gen for all files
 # [gen_config(ff) for ff in raw_files];
@@ -152,7 +150,7 @@ for recordedRaw in raw_files:
         # start odaslive
         startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) \
                 + ".  Starting odaslive offline with input \n" \
-                + rawpath
+                + rawpath + "\n"
         with open(recordingLog, "a") as f :
             f.write(startStr)
         print(startStr)
@@ -171,7 +169,7 @@ for recordedRaw in raw_files:
         print(endStr)
 
         # run odasparsing.py to check if SST.log has empty data
-        p3 = Popen(["python3", odaspath+"/localization/Matrix/python/odasparsing.py"], 
+        p3 = Popen(["python3", odaspath+"/localization/Matrix/python/odasparsing.py", sstpath], 
                    stdout=PIPE, 
                    stdin=PIPE, 
                    universal_newlines=True)    
@@ -182,13 +180,14 @@ for recordedRaw in raw_files:
             print("Files are not useful")
         
         # append recording start time and end time to the end of SST.log and SSL.log
-        with open(sstpath, "a") as f:
-            f.write("Start time: " + str(aT) + "\n")
-            f.write("End time: " + str(mT))
-        
-        with open(sslpath, "a") as f:
-            f.write("Start time: " + str(aT) + "\n")
-            f.write("End time: " + str(mT))
+        # aT, mT = read_aT_mT("/home/pi/odas/recordings/arecordLog/aTmT.txt")
+        # with open(sstpath, "a") as f:
+        #     f.write("Start time: " + str(aT) + "\n")
+        #     f.write("End time: " + str(mT))
+        # 
+        # with open(sslpath, "a") as f:
+        #     f.write("Start time: " + str(aT) + "\n")
+        #     f.write("End time: " + str(mT))
 
                            
     except KeyboardInterrupt:
