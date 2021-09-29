@@ -46,9 +46,15 @@ if saveFlag:
     print('useful\n')
 else:
     print('not useful\n')
+
+import sys
+if len(sys.argv)>1:
+    fpath = sys.argv[1]
+else:
+    fpath = '/home/pi/odas/recordings/SST/cleaned.log'
    
 # create a new log file that is checked and cleaned
-with open('/home/pi/odas/recordings/SST/cleaned.log', 'w') as f:
+with open(fpath, 'w') as f:
     if saveFlag:
         for item in data:
             f.write("%s\n" % item)
