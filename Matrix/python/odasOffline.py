@@ -109,7 +109,7 @@ def gen_config(
             idx = np.where([(keyword+".raw" in ll.split("/")[-1]) for ll in lines])[0]
             # newpath = "".join([target_path , "/recordings", array_idx , "/", keyword , "/" , keyword , "_" , tag , ".raw"])
             print('gen_config : use dummypath for', keyword) # to save disk space
-            newpath = "".join([target_path , "/recordings", array_idx , "/", keyword , "/" , keyword , "_dummy.raw"])
+            newpath = "".join([target_path , "/" , keyword , "_dummy.raw"])
 
         for ii in idx: # replace path in matching lines
             line = lines[ii].split("\"")
