@@ -9,30 +9,6 @@ from datetime import datetime
 from subprocess import Popen, PIPE
 import signal
 import numpy as np
-
-# Define countdown(): a function that calculates the time difference T between now and the next 5 minute mark
-# Put the system to sleep for the length of T
-def countdown(rhythm_in_seconds = 300):
-    timestamp = timer.time()
-    t1 = datetime.fromtimestamp(timestamp)
-    t2 = datetime.fromtimestamp(
-            timestamp + rhythm_in_seconds - timestamp % rhythm_in_seconds)
-    duration = t2 - t1
-    sleepTime = round(duration.total_seconds(),3)
-    print("Time is " + str(t1) + ". Going to sleep now...")
-    timer.sleep(sleepTime)
-    print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Waking up now...")
-
-# Returns aT & mT from file
-# filename (string): textfile containing aT & mT (seperated by \n)
-# aT: access time, mT: modified time
-def read_aT_mT(filename) :
-    f = open(filename)
-    aT = f.readline()
-    mT = f.readline()
-    f.close()
-
-    return aT, mT
     
 from sys import platform as pf
 if pf == "linux": # PI
@@ -46,22 +22,22 @@ elif pf == "darwin": # manu macOS
     odaspath = "/Users/mha/dtu/mpl/odas"
     usbLocation = "/Volumes"
     odasbin = None
-usbLocation  = "".join([usbLocation,"/ARRAY0"])
 
 
 # recpath is where the script looks for recordings and creates the log folders.
-if len(sys.argv) > 1:
+if len(sys.argv) > 1: # check if provided as command line arg
     recpath = sys.argv[1]
     if recpath[-1] == '/':
         recpath = recpath[:-1]
 else: 
+    # usbLocation  = "".join([usbLocation,"/ARRAY0"])
     # recpath      = usbLocation + "/experiment"
     recpath = "/home/soundmapping/share/test"
-recordingLog = "./recording.log"
 
 FS = 32000
 odasConfigTemplate = "./../matrix_creator_offline.cfg" # can be relative
 odasConfigTmp = recpath+"/tmp_matrix_creator_offline.cfg" # absolute path needed
+recordingLog = "./recording.log"
 
 # find all raw recursively and append in raw_files
 raw_files = []
@@ -72,9 +48,6 @@ for dirpath, subdirs, files in os.walk(recpath):
 print("found these files in ", recpath)
 [print(ff) for ff in raw_files]
 print("\n")
-
-# start the program at a (time%seconds==0) mark, run countdown(seconds), default 300 seconds
-countdown(2)
 
 def gen_config(
     raw_input_filepath, 
@@ -195,17 +168,6 @@ for recordedRaw in raw_files:
         flag = p3.communicate(input=sstpath)[0].strip()
         if flag == "not useful":
             print("Files are not useful")
-        
-        # append recording start time and end time to the end of SST.log and SSL.log
-        # aT, mT = read_aT_mT("/home/pi/odas/recordings/arecordLog/aTmT.txt")
-        # with open(sstpath, "a") as f:
-        #     f.write("Start time: " + str(aT) + "\n")
-        #     f.write("End time: " + str(mT))
-        # 
-        # with open(sslpath, "a") as f:
-        #     f.write("Start time: " + str(aT) + "\n")
-        #     f.write("End time: " + str(mT))
-
                            
     except KeyboardInterrupt:
         p2.send_signal(signal.SIGINT)
