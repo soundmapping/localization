@@ -42,13 +42,12 @@ if pf == "linux": # PI
     usbLocation  = "/media/"+user
     odasbin = "/home/"+user+"/odas/bin"
 elif pf == "darwin": # manu macOS
-    arrayInd = str(0)
     odaspath = "/Users/mha/dtu/mpl/odas"
-    usbLocation = "/Volumes/"
+    usbLocation = "/Volumes"
     odasbin = None
     # ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw
 
-usbLocation  = "".join([usbLocation,"ARRAY",arrayInd])
+usbLocation  = "".join([usbLocation,"/ARRAY0"])
 recpath      = usbLocation + "/noSST"
 recordingLog = "./recording.log"
 
@@ -136,8 +135,8 @@ def gen_config(
     return rawpath, sslpath, sstpath, seppath, pflpath
 
 # single file test 
-raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
-gen_config(raw_input_filepath,verbose=True);
+# raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
+# gen_config(raw_input_filepath,verbose=True);
 
 # test cfg gen for all files
 # [gen_config(ff) for ff in raw_files];
@@ -176,7 +175,7 @@ for recordedRaw in raw_files:
         print(endStr)
 
         # run odasparsing.py to check if SST.log has empty data
-        p3 = Popen(["python3", odaspath+"/python/odasparsing.py"], 
+        p3 = Popen(["python3", odaspath+"/localization/python/odasparsing.py"], 
                    stdout=PIPE, 
                    stdin=PIPE, 
                    universal_newlines=True)    
