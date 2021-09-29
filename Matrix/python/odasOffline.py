@@ -46,8 +46,10 @@ elif pf == "darwin": # manu macOS
     odaspath = "/Users/mha/dtu/mpl/odas"
     usbLocation = "/Volumes"
     odasbin = None
-
 usbLocation  = "".join([usbLocation,"/ARRAY0"])
+
+
+# recpath is where the script looks for recordings and creates the log folders.
 if len(sys.argv) > 1:
     recpath = sys.argv[1]
 else: 
@@ -55,7 +57,8 @@ else:
     recpath = "/home/soundmapping/share/test"
 recordingLog = "./recording.log"
 
-odasConfigTemplate = "./../matrix_creator_offline.cfg"
+FS = 32000
+odasConfigTemplate = "./../matrix_creator_offline.cfg" # can be relative
 odasConfigTmp = recpath+"/tmp_matrix_creator_offline.cfg" # absolute path needed
 
 # find all raw recursively and append in raw_files
@@ -73,10 +76,11 @@ countdown(2)
 
 def gen_config(
     raw_input_filepath, 
-    target_path          , 
+    target_path          = recpath, # destination for log and recording folders
     template_config_path = "./../matrix_creator_offline.cfg",
     target_config_path   = "./tmp_matrix_creator_offline.cfg",
     verbose = False,
+    FS = FS,
     ):
     # this function parses identifiers from raw filename, 
     # and replaces the paths in the ODAS config template accordingly
@@ -99,11 +103,11 @@ def gen_config(
             newpath = raw_input_filepath
             idx = np.where([(keyword in ll) for ll in lines])[0]
         elif keyword in ["SSL", "SST"]:
-            newpath = "".join([target_path , "logs", array_idx , "/", keyword , "/c" , keyword , "_" , tag , ".log"])
+            newpath = "".join([target_path , "/logs", array_idx , "/", keyword , "/c" , keyword , "_" , tag , ".log"])
             idx = np.where([(keyword in ll.split("/")[-1]) for ll in lines])[0]
         elif keyword in ["separated", "postfiltered"]:
             idx = np.where([(keyword+".raw" in ll.split("/")[-1]) for ll in lines])[0]
-            newpath = "".join([target_path , "recordings", array_idx , "/", keyword , "/" , keyword , "_" , tag , ".raw"])
+            newpath = "".join([target_path , "/recordings", array_idx , "/", keyword , "/" , keyword , "_" , tag , ".raw"])
 
         for ii in idx: # replace path in matching lines
             line = lines[ii].split("\"")
@@ -113,6 +117,10 @@ def gen_config(
 
     with open(template_config_path) as f:
         lines = f.readlines()
+
+    # hardcoded FS set
+    lines[9] = "    fS = "+str(FS)+";\n"
+    if verbose: print([lines[9]])
 
     # set paths
     lines, rawpath = replace_path(lines, "pureRaw")
@@ -126,8 +134,8 @@ def gen_config(
     return rawpath, sslpath, sstpath, seppath, pflpath
 
 # single file test 
-# raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
-# gen_config(raw_input_filepath,"/Volumes/ARRAY0/noSST/",verbose=True);
+# raw_input_filepath = "/home/soundmapping/share/test/pureRaw/allChannels_0_0_0.raw"
+# gen_config(raw_input_filepath,"/home/soundmapping/share/test/",verbose=True);
 
 # test cfg gen for all files
 # [gen_config(ff) for ff in raw_files];
