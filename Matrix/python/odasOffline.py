@@ -49,9 +49,8 @@ elif pf == "darwin": # manu macOS
     odasbin = None
     # ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw
 
-arrayAppendix = "_" + arrayInd
 usbLocation  = "".join([usbLocation,"ARRAY",arrayInd])
-recpath = "/Volumes/ARRAY0/noSST/"
+recpath      = usbLocation + "/noSST"
 recordingLog = "./recording.log"
 
 odasConfigTemplate = "./../matrix_creator_offline.cfg"
