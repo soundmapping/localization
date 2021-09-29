@@ -45,7 +45,6 @@ elif pf == "darwin": # manu macOS
     odaspath = "/Users/mha/dtu/mpl/odas"
     usbLocation = "/Volumes"
     odasbin = None
-    # ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw
 
 usbLocation  = "".join([usbLocation,"/ARRAY0"])
 recpath      = usbLocation + "/noSST"
@@ -89,9 +88,6 @@ def gen_config(
         target_path = raw_input_filepath.split("pureRaw")[0]
 
     # parse
-    print(raw_input_filepath)
-    raw_input_filepath = raw_input_filepath.replace(u'\uf022',":")
-    print(raw_input_filepath)
     if verbose: print(raw_input_filepath)
     inpath = raw_input_filepath.split("_")
     # if verbose: print(len(inpath),inpath)
@@ -112,12 +108,10 @@ def gen_config(
             newpath = "".join([target_path , keyword , "/c" , keyword , "_" , tag , ".log"])
             idx = np.where([(keyword in ll.split("/")[-1]) for ll in lines])[0]
         elif keyword in ["separated", "postfiltered"]:
+            idx = np.where([(keyword+".raw" in ll.split("/")[-1]) for ll in lines])[0]
             newpath = "".join([target_path , keyword , "/" , keyword , "_" , tag , ".raw"])
-            kw = "\/".join([keyword,keyword])
-            idx = np.where([(kw in ll.split("/")[-1]) for ll in lines])[0]
 
         for ii in idx: # replace path in matching lines
-            print(lines[ii])
             line = lines[ii].split("\"")
             lines[ii] = "\"".join([line[0], newpath, line[2]])
             if verbose: print(lines[ii])
@@ -138,8 +132,8 @@ def gen_config(
     return rawpath, sslpath, sstpath, seppath, pflpath
 
 # single file test 
-# raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
-# gen_config(raw_input_filepath,verbose=True);
+raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
+gen_config(raw_input_filepath,verbose=True);
 
 # test cfg gen for all files
 # [gen_config(ff) for ff in raw_files];
