@@ -36,12 +36,11 @@ def read_aT_mT(filename) :
 from sys import platform as pf
 if pf == "linux": # PI
     # Find the array Index
-    f = open("/home/pi/odas/arrayInfo.txt","r")
-    arrayInd = f.readline()
-    f.close()
-    odaspath = "/home/pi/odas"
-    usbLocation  = "/media/pi/" + arrayInd
-    odasbin = "/home/pi/odas/bin"
+    import getpass
+    user = getpass.getuser()
+    odaspath = "/home/"+user+"/odas"
+    usbLocation  = "/media/"+user
+    odasbin = "/home/"+user+"/odas/bin"
 elif pf == "darwin": # manu macOS
     arrayInd = str(0)
     odaspath = "/Users/mha/dtu/mpl/odas"
