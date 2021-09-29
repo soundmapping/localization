@@ -75,7 +75,7 @@ countdown(2)
 
 def gen_config(
     raw_input_filepath, 
-    target_path          = None, 
+    target_path          , 
     template_config_path = "./../matrix_creator_offline.cfg",
     target_config_path   = "./tmp_matrix_creator_offline.cfg",
     verbose = False,
@@ -83,9 +83,6 @@ def gen_config(
     # this function parses identifiers from raw filename, 
     # and replaces the paths in the ODAS config template accordingly
     # !!!! hardcoded search for SSL SST pureRaw to match template file !!!
-
-    if not target_path:
-        target_path = raw_input_filepath.split("pureRaw")[0]
 
     # parse
     if verbose: print(raw_input_filepath)
@@ -96,7 +93,6 @@ def gen_config(
     array_idx = inpath[-1][0]
 
     tag = "_".join([date,time,array_idx])
-    target_path = target_path + "logs"+ array_idx + "/"
     # if verbose: print(target_path, tag)
 
     def replace_path(lines,keyword):
@@ -105,11 +101,11 @@ def gen_config(
             newpath = raw_input_filepath
             idx = np.where([(keyword in ll) for ll in lines])[0]
         elif keyword in ["SSL", "SST"]:
-            newpath = "".join([target_path , keyword , "/c" , keyword , "_" , tag , ".log"])
+            newpath = "".join([target_path , "logs", array_idx , "/", keyword , "/c" , keyword , "_" , tag , ".log"])
             idx = np.where([(keyword in ll.split("/")[-1]) for ll in lines])[0]
         elif keyword in ["separated", "postfiltered"]:
             idx = np.where([(keyword+".raw" in ll.split("/")[-1]) for ll in lines])[0]
-            newpath = "".join([target_path , keyword , "/" , keyword , "_" , tag , ".raw"])
+            newpath = "".join([target_path , "recordings", array_idx , "/", keyword , "/" , keyword , "_" , tag , ".raw"])
 
         for ii in idx: # replace path in matching lines
             line = lines[ii].split("\"")
@@ -133,7 +129,7 @@ def gen_config(
 
 # single file test 
 raw_input_filepath = "/Volumes/ARRAY0/noSST/recordings3/pureRaw/allChannels_2021-09-24_08:30:00_3.raw"
-gen_config(raw_input_filepath,verbose=True);
+gen_config(raw_input_filepath,"/Volumes/ARRAY0/noSST/",verbose=True);
 
 # test cfg gen for all files
 # [gen_config(ff) for ff in raw_files];
