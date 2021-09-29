@@ -33,7 +33,7 @@ configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 # Recording Details
 hardwareInfo = "hw:2,0"
 sampleFormat = "S16_LE"
-sampleRate = "32000"
+sampleRate = "44100"
 numChannels = "8"
 typeFile = "raw"
 
@@ -41,8 +41,8 @@ outFile = wd + "recording.raw"
 recordingLog = "/home/pi/odas/recordings/arecordLog/recording.log"
 recordedRaw = "/home/pi/odas/recordings/pureRaw/recorded.raw"
 
-if int(arrayInd) == 7 : # Only Applies to Device 6 because of Hardware Interface
-    hardwareInfo = "hw:3,0"
+# if int(arrayInd) == 7 : # Only Applies to Device 6 because of Hardware Interface
+#     hardwareInfo = "hw:3,0"
 
 # start the program at a 5-minute mark, run countdown()
 countdown5()
