@@ -89,11 +89,14 @@ def gen_config(
         target_path = raw_input_filepath.split("pureRaw")[0]
 
     # parse
+    print(raw_input_filepath)
+    raw_input_filepath = raw_input_filepath.replace(u'\uf022',":")
+    print(raw_input_filepath)
     if verbose: print(raw_input_filepath)
     inpath = raw_input_filepath.split("_")
     # if verbose: print(len(inpath),inpath)
     date = inpath[1]
-    time = inpath[2]
+    time = inpath[2] 
     array_idx = inpath[-1][0]
 
     tag = "_".join([date,time,array_idx])
@@ -175,7 +178,7 @@ for recordedRaw in raw_files:
         print(endStr)
 
         # run odasparsing.py to check if SST.log has empty data
-        p3 = Popen(["python3", odaspath+"/localization/python/odasparsing.py"], 
+        p3 = Popen(["python3", odaspath+"/localization/Matrix/python/odasparsing.py"], 
                    stdout=PIPE, 
                    stdin=PIPE, 
                    universal_newlines=True)    
