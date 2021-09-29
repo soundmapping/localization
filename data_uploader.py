@@ -21,8 +21,17 @@ def timeExtract(filename):
             f.seek(-2, 1)
             counter=counter+1
         endTime_line = f.readline().decode()
+
         # Go to the 2nd byte before the end of the last second line
         f.seek(-counter-2, 2)
+        # To accomadate accidental nextline in log files:
+        if f.readline() == b'\n' :
+            print("Only White Space: ", f.readline())
+            f.seek(-counter-3, 2)
+            print("\n Moving into prev line")
+        else : # Necessary because readline() was invoked (needs to be repointed)
+            f.seek(-counter-2,2) 
+        
         while f.read(1) != b'\n':
             f.seek(-2, 1)
         startTime_line = f.readline().decode()
@@ -33,6 +42,9 @@ def timeExtract(filename):
 def durationinMicroseconds(filename):
     startTime = timeExtract(filename)[0].split()[2:]
     endTime = timeExtract(filename)[1].split()[2:]
+
+    print("startTime = ", startTime)
+    print("endTime = ", endTime)
     startTimeStr = startTime[0] + ' ' + startTime[1]
     endTimeStr = endTime[0] + ' ' + endTime[1]
     T1 = datetime.datetime.strptime(startTimeStr, '%Y-%m-%d %H:%M:%S.%f')
