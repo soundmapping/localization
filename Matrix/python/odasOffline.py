@@ -141,18 +141,21 @@ for recordedRaw in raw_files:
         print(noFileStr)
         continue
     try:
-        # start odaslive
-        startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Starting odaslive offline \n"
-        with open(recordingLog, "a") as f :
-            f.write(startStr)
-        print(startStr)
         rawpath, sslpath, sstpath, seppath, pflpath = \
                 gen_config(
             recordedRaw, 
-            target_path          = None, 
+            target_path          = recpath + "/", 
             template_config_path = odasConfigTemplate,
             target_config_path   = odasConfigTmp,
             verbose              = False)
+
+        # start odaslive
+        startStr = "Time is " + str(datetime.fromtimestamp(timer.time())) \
+                + ".  Starting odaslive offline with input \n" \
+                + rawpath
+        with open(recordingLog, "a") as f :
+            f.write(startStr)
+        print(startStr)
         p2 = Popen(["./odaslive", "-vc", odasConfigTmp],
                    cwd=odasbin,
                    universal_newlines=True,
