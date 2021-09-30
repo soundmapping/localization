@@ -1,0 +1,1 @@
+create index this_raw on soundmapping.raw2(`Time In Seconds`);

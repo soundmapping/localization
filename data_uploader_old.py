@@ -103,12 +103,10 @@ def extractDirectionalities(filename, mic_number):
 
 ###############################################################################
 newest = sys.argv[1]
-# newest = "/Users/odas2/Desktop/logs_32kHz/logs2/SST/cSST_2021-09-27_19:50:00_2.log" # Tester
 mic_number = newest[-5] # given currently used file nomenclature _x.log
 
 str_com_pre = 'rclone deletefile RaspberryPi:ODAS/'
-# gdrive = "/Users/odas2/Google Drive/My Drive/ODAS/logs"
-gdrive = "/Volumes/GoogleDrive/My Drive/ODAS/logs"
+gdrive = "/Users/odas2/Google Drive/My Drive/ODAS/logs"
 destination = gdrive+str(mic_number)+"/SST/Processed"
 
 # extract data from log file and convert to pandas df
@@ -129,10 +127,8 @@ with open(newest, 'r') as f:
                 if(err_num):
                     print(datetime.datetime.now(), ',' ,err_num, 'was the exit code of the error')
             sys.exit()
-
-print("Start Extraction \n")            
+            
 df = extractDirectionalities(newest, mic_number)
-print("End of Extraction \n")
 
 # connect to data base and upload to raw table 
 engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
@@ -140,8 +136,7 @@ engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
                                pw="odasodas",
                                db="soundmapping"))
 
-print("Porting to SQL")
-df.to_sql('raw2', con = engine, if_exists = 'append', chunksize = 1000)
+df.to_sql('raw', con = engine, if_exists = 'append', chunksize = 1000)
 
 try:
     temp = shutil.move(newest,destination)
