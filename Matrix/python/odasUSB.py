@@ -167,12 +167,14 @@ while True:
         key = "not useful"
         if flag == key:
             # Keep Raw File for reference
+            os.rename("/home/pi/odas/recordings/pureRaw/allChannels.raw", rawName)
             upRaw = Popen(["cp","-v",rawName,usbLocation+"/ODAS/recordings"+arrayInd+"/pureRaw"],
                 stdout=PIPE, stderr=PIPE)
+            
             os.remove("/home/pi/odas/recordings/SSL/SSL.log")
             os.remove("/home/pi/odas/recordings/separated/separated.raw")
             os.remove("/home/pi/odas/recordings/postfiltered/postfiltered.raw")
-            os.remove("/home/pi/odas/recordings/pureRaw/allChannels.raw")
+#             os.remove("/home/pi/odas/recordings/pureRaw/allChannels.raw")
             rmStr = "Time is " + str(datetime.fromtimestamp(timer.time())) + ". Files has been removed or flushed \n"
             with open(recordingLog, "a") as f :
                 f.write(rmStr)
