@@ -39,7 +39,7 @@ arrayAppendix = "_" + arrayInd
 
 # Recording Details
 hardwareInfo = "hw:2,0"
-sampleRate = "44100"
+sampleRate = "32000"
 numChannels = "8"
 typeFile = "raw"
 outFile = "recording.raw"
