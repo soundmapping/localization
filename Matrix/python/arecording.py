@@ -33,7 +33,7 @@ configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 # Recording Details
 hardwareInfo = "hw:2,0"
 sampleFormat = "S16_LE"
-sampleRate = "44100"
+sampleRate = "32000"
 numChannels = "8"
 typeFile = "raw"
 
@@ -60,8 +60,8 @@ while True:
             "-c", numChannels, outFile],
             universal_newlines=True,
             stdout=PIPE)
-        # leave 20s for the remaining process and clean up
-        timer.sleep(280)
+        # leave 30s for the remaining process and clean up
+        timer.sleep(270)
         # end odaslive
         p2.send_signal(signal.SIGINT)
         p2.wait()
