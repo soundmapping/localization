@@ -20,6 +20,23 @@ def countdown5():
     timer.sleep(sleepTime)
     print("Time is " + str(datetime.fromtimestamp(timer.time())) + ". Waking up now...")
     
+# Retrieves Hardware info based on arecord's output
+# This will direct attention to MATRIXIOSOUND
+# as there is a dummy/virtual microphone on the other card
+# Note: Allocation of Hardware is inconsistent
+# -> This function addresses the changes
+def getHardwareInfo():
+    device_avail = Popen(["arecord", "-l"], stdout=PIPE)
+    device_text, ___ = device_avail.communicate()
+
+    device_text = str(device_text)
+
+    test = device_text.split(": MATRIXIOSOUND")
+    test2 = test[0].split("card ")
+    hardwareInfo = "hw:" + test2[2] + ",0"
+    
+    return hardwareInfo
+    
 # Find the array Index
 f = open("/home/pi/odas/arrayInfo.txt","r")
 arrayInd = f.readline()
@@ -31,7 +48,8 @@ wd = "/home/pi/odas/recordings/arecordLog/"
 configDir = "../config/matrix-demo/matrix_creator_wRaw.cfg"
 
 # Recording Details
-hardwareInfo = "hw:2,0"
+# hardwareInfo = "hw:2,0"
+hardwareInfo = getHardwareInfo()
 sampleFormat = "S16_LE"
 sampleRate = "32000"
 numChannels = "8"
