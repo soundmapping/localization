@@ -9,5 +9,8 @@ To visualize all the DoA Algorithms, run the following:
 ```
 julia runme.jl
 ```
-
-Plots will be generated at `./plots` folder
+To visualize the sensors' location, run the following:
+```
+julia sensor.jl
+```
+Note: Plots will be generated at `./plots` folder
