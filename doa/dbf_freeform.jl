@@ -72,7 +72,6 @@ function create_ψ_matrix(sensors::Vector, order=3, f=1000, c0=343)
             value = ( (-1.0im)^n ) .* ψ(sensor[1], sensor[2], n, f, c0);
             append!(ψ_vec_n, value)
         end
-        println(ψ_vec_n)
         ψ_mat[idx, :] = ψ_vec_n';
     end
     return ψ_mat
@@ -96,7 +95,7 @@ function steering_matrix(az_steer_deg, order)
 end
 
 #=
-dbf() creates the Differential Beamformer (coordinate-free)
+dbf_coFree() creates the Differential Beamformer (coordinate-free)
 based on the Correlation Matrix Rx and sensors' positions
 
 Input:
@@ -107,7 +106,7 @@ Output:
 P           : Power of Beampattern
 az_list     : List Containing Azimuth Angles (in degrees)
 =#
-function dbf(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
+function dbf_coFree(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
     v = ones(2*order+1); # Weights associated with DBF
     v ./= size(v,1);
     ψ = create_ψ_matrix(sensors, order, f, c0);
@@ -128,7 +127,7 @@ include("../sensor.jl") # To retrieve Sensor Positions
 Step 0: Open recording or generate signal
 =#
 # To Generate Signal:
-include("./signal_generator/generate_sig.jl")
+include("../signal_generator/generate_sig.jl")
 az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
 c0 = 343;       # Speed of Medium (in m/s)
 filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
@@ -156,9 +155,9 @@ new_S = mapreduce(permutedims, vcat, new_S);
 Step 2: Generate Beamformer Pattern based on Different 
 =#
 using Statistics
-order = 2;
+order = 1;
 Rx = cov(new_S, dims=2);
-P, az_list = dbf(Rx, sensor, order);
+P, az_list = dbf_coFree(Rx, sensors, order);
 
 #= 
 Step 3: Predict the Direction of Arrival based on Maximum Power
@@ -171,7 +170,7 @@ Step 4: Plot Beamformer Power Spectras
 =#
 ymin = minimum([P_dbf_db;]);
 using Plots
-plot(az_list, P_dbf_db, label="DoA = $(az_dbf_max)°");
+plot(az_list, P_dbf_db, label="DBF order $(order) = $(az_dbf_max)°");
 xlabel!("Azimuth Angle (°)");
 ylabel!("Power (dB)");
 plot!([az_gt, az_gt], [ymin, 0],
@@ -180,13 +179,13 @@ plot!([az_gt, az_gt], [ymin, 0],
 plot!([az_dbf_max, az_dbf_max], [ymin, 0],
     label="Predicted Azimuth Angle = $(az_dbf_max)°",
     marker=:x)
-savefig("./plots/DBF_coFree_Power_Spectra.png")
+savefig("./plots/DBF_coFree_order$(order)_Power_Spectra.png")
 
 #= 
 Step 5: Plot Polar Plots of Beampattern
 =#
 plot(deg2rad.(az_list), P_dbf_db, proj=:polar, 
-        label="dbf: $(az_dbf_max)°");
+        label="dbf order $(order): $(az_dbf_max)°");
 plot!(deg2rad.([az_gt, az_gt]),
     [ymin, 0],
     label="True Azimuth Angle = $(az_gt)°",
@@ -197,4 +196,4 @@ plot!(deg2rad.([az_dbf_max, az_dbf_max]),
     marker=:x)
 
 ylims!((ymin, maximum(P_dbf_db)));
-savefig("./plots/DBF_coFree_Beamformer.png")
+savefig("./plots/DBF_coFree_order$(order)_Beamformer.png")

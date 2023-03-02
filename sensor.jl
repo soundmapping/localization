@@ -1,3 +1,34 @@
+using LinearAlgebra
+function check_aliasing(sensor1::Vector, sensor2::Vector, f=1000, c0=343)
+    d = norm((sensor1-sensor2), 2);
+    λ = c0 / f;
+
+    return (d > λ/2)
+end
+
+function aliasing_frequency(sensor1::Vector, sensor2::Vector, c0=343.0)
+    d = norm((sensor1-sensor2), 2);
+
+    return (c0 / (2*d))
+end
+
+function dbf_condition(sensor1::Vector, sensor2::Vector, factor=0.1, f=1000, c0=343.0)
+    d = norm((sensor1-sensor2), 2);
+    k = 2 * π * f / c0 ;
+
+    return (k*d < (π*factor) )
+end
+
+function dbf_max_freq(sensor1::Vector, sensor2::Vector, factor=0.1, c0=343.0)
+    d = norm((sensor1-sensor2), 2);
+
+    return (c0 * factor / (2*d))
+end
+
+function dbf_max_spacing(factor=0.1, f=1000, c0=343.0)
+    return (c0 * factor / (2*f))
+end
+
 c0 = 343; # Speed of Sound (m/s)
 f = 20000;   # Frequency of Interest
 wavelength = c0 / f;
@@ -12,7 +43,6 @@ sensors = [mic1; mic2; mic3; mic4]
 
 # sensors = randn(25, 3)
 
-# mic9 = [0.02009, -0.0285, 0]
 #=
 Sensor Positions for Matrix Creator
 =#
@@ -25,6 +55,13 @@ mic6 = [0.02009, 0.0485, 0]
 mic7 = [0.0485, 0.02009, 0]
 mic8 = [0.0485, -0.02009, 0]
 
+# mic9 = [0.04009, -0.0285, 0] # For oddity
+
+# println("Aliasing: $(check_aliasing(mic1, mic2, 800))")
+# println("Aliasing Frequency: $(aliasing_frequency(mic1, mic5, 343.0)) Hz")
+# println("DBF Condition: $(dbf_condition(mic1, mic2, 1000))")
+# println("DBF Maximum Frequency: $(dbf_max_freq(mic1, mic2)) Hz")
+# println("Maximum Spacing: $(dbf_max_spacing(0.1, 1000)) m")
 
 sensors = [mic1, mic2, mic3, mic4, mic5, mic6, mic7, mic8]; 
 println("sensors Loaded: $(size(sensors))")
