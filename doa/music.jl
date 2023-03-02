@@ -26,29 +26,39 @@ end
 Returns the MUSIC Pseudo Power Spectra with the associated Azimuth Angles
 Input:
 Rx          : Covariance Matrix of Signal
-sensor      : Sensor Positions corresponding to Rx
+sensors      : Sensor Positions corresponding to Rx
 
 Output:
 P           : Power of MPDR Beampattern
 az_list     : List Containing Azimuth Angles
 =#
-function music(Rx, sensor, n_signals);
+function music(Rx, sensors, n_signals);
     eig_vals, Rs, Rn = get_eigensubspace(Rx, n_signals);
-    P_music, az_list = cbf(Rn, sensor);
+    P_music, az_list = cbf(Rn, sensors);
     return (1 ./ P_music), az_list
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__ 
+    include("../sensor.jl") # To retrieve Sensor Positions
+    #=
+    Step 0: Open recording or generate signal
+    =#
+    # To Generate Signal:
+    include("./signal_generator/generate_sig.jl")
+    az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
+    c0 = 343;       # Speed of Medium (in m/s)
+    filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
+    new_sig, sample_rate = simulate_sensor_signal(filename, sensors, az_gt, c0);
+
+    # Open Multichannel Recording:
+    # using WAV
+    # new_sig, sample_rate = wavread("./test_signal.wav");
 
     #= 
     Step 1: Pre-process Signal by selecting 
           Frequency of Interest at each channel
     =#
-    include("../sensor.jl") # To retrieve Sensor Positions
-    include("../signal_generator/generate_sig.jl")
     include("../utils/preprocess.jl")
-    using WAV
-    # new_sig, sample_rate = wavread("./test_signal.wav");
     freq_interest = 1000; # (Hz)
     new_S = []
     for signal in eachcol(new_sig)
@@ -59,13 +69,12 @@ if abspath(PROGRAM_FILE) == @__FILE__
     new_S = mapreduce(permutedims, vcat, new_S);
 
     #=
-    Step 2: Generate Beamformer Pattern based on Different 
+    Step 2: Generate Beamformer Pattern
     =#
     using Statistics
     Rx = cov(new_S, dims=2);
-    P, az_list = cbf(Rx, sensor);
-    P_music, az_list = music(Rx, sensor, 1); # MUSIC
-    P_mvdr, az_list = mvdr(Rx, sensor); # Technically MPDR
+    P, az_list = cbf(Rx, sensors);
+    P_music, az_list = music(Rx, sensors, 1); # MUSIC
 
     #= 
     Step 3: Predict the Direction of Arrival based on Maximum Power
@@ -77,7 +86,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     #= 
     Step 4: Plot Beamformer Power Spectras
     =#
-    ymin = minimum([P_cbf_db; P_music_db; P_mvdr_db]);
+    ymin = minimum([P_cbf_db; P_music_db;]);
     using Plots
     plot(az_list, P_cbf_db, label="DoA = $(az_cbf_max)°");
     plot!(az_list, P_music_db, label="MUSIC DoA = $(az_music_max)°")

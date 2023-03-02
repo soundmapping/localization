@@ -62,8 +62,27 @@ function cc_tdoa(signal, sensor, fs=32000)
     return az, el, delays;
 end
 
-include("../sensor.jl")
+include("../sensor.jl") # To retrieve Sensor Positions
+#=
+Step 0: Open recording or generate signal
+=#
+# To Generate Signal:
 include("../signal_generator/generate_sig.jl")
-@time az, el, delays = cc_tdoa(new_sig, sensor, 32000);
+az_gt = 0.0;      # Ground Truth Azimuth Angle (in degrees)
+c0 = 343.0;       # Speed of Medium (in m/s)
+filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
+new_sig, sample_rate = simulate_sensor_signal(filename, sensors, az_gt, c0);
+
+# Open Multichannel Recording:
+# using WAV
+# new_sig, sample_rate = wavread("./test_signal.wav");
+
+#= 
+Step 1: Pre-process Signal by selecting 
+      Frequency of Interest at each channel
+=#
+include("../utils/preprocess.jl")
+@time az, el, delays = cc_tdoa(new_sig, sensors, 32000);
+println("Azimuth Angle from Cross-Correlation: $(az)°")
 # push!(pair_corr, xcorr(signal_pair[1, :], signal_pair[2,:]));
 # plot(abs.(pair_corr[1]))

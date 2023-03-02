@@ -25,17 +25,19 @@ end
 #=
 Input:
 Rx          : Covariance Matrix of Signal
-sensor      : Sensor Positions corresponding to Rx
+sensors     : Sensor Positions corresponding to Rx
+f           : Frequency (in Hz)
+c0          : Speed of Medium (in m/S)
 
 Output:
 p           : Power of Beampattern
 az_list     : List Containing Azimuth Angles
 =#
-function cbf(Rx, sensor)
+function cbf(Rx, sensors, f=1000, c0=343)
     az_list = LinRange(-180,180,361);
     P = Vector{}(undef, size(az_list,1));
     for (idx, az) in enumerate(az_list)
-        weights = vandermonde_weight.(sensor, az, 90);
+        weights = vandermonde_weight.(sensors, az, 90, f, c0);
         P[idx] = weights' * Rx * weights;
     end
     return abs.(P), az_list;
@@ -51,14 +53,23 @@ function predict_az(P, az_list)
     return P_db, az_with_max_P
 end
 
-function beamform(Rx, sensor, method::Function, n_signals=1)
-    return method(Rx, sensor)
+function beamform(Rx, sensors, method::Function, n_signals=1)
+    return method(Rx, sensors)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__ 
     include("../sensor.jl") # To retrieve Sensor Positions
-    include("../signal_generator/generate_sig.jl")
-    include("../utils/preprocess.jl")
+    #=
+    Step 0: Open recording or generate signal
+    =#
+    # To Generate Signal:
+    include("./signal_generator/generate_sig.jl")
+    az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
+    c0 = 343;       # Speed of Medium (in m/s)
+    filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
+    new_sig, sample_rate = simulate_sensor_signal(filename, sensors, az_gt, c0);
+
+    # Open Multichannel Recording:
     # using WAV
     # new_sig, sample_rate = wavread("./test_signal.wav");
 
@@ -66,6 +77,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     Step 1: Pre-process Signal by selecting 
           Frequency of Interest at each channel
     =#
+    include("../utils/preprocess.jl")
     freq_interest = 1000; # (Hz)
     new_S = []
     for signal in eachcol(new_sig)
@@ -80,7 +92,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     =#
     using Statistics
     Rx = cov(new_S, dims=2);
-    P, az_list = cbf(Rx, sensor);
+    P, az_list = cbf(Rx, sensors);
 
     #= 
     Step 3: Predict the Direction of Arrival based on Maximum Power

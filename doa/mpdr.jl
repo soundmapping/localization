@@ -6,29 +6,39 @@ include("./cbf.jl")
 Returns the MPDR Power Spectra with the associated Azimuth Angles
 Input:
 Rx          : Covariance Matrix of Signal
-sensor      : Sensor Positions corresponding to Rx
+sensors     : Sensor Positions corresponding to Rx
 
 Output:
 P           : Power of MPDR Beampattern
 az_list     : List Containing Azimuth Angles
 =#
-function mvdr(Rx, sensor)
+function mvdr(Rx, sensors)
     println("For Sanity Check, Rank of Covariance Matrix: $(rank(Rx))")
-    P_mvdr, az_list = cbf(inv(Rx), sensor);
+    P_mvdr, az_list = cbf(inv(Rx), sensors);
     return (1 ./ P_mvdr), az_list
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__ 
+    include("../sensor.jl") # To retrieve Sensor Positions
+    #=
+    Step 0: Open recording or generate signal
+    =#
+    # To Generate Signal:
+    include("./signal_generator/generate_sig.jl")
+    az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
+    c0 = 343;       # Speed of Medium (in m/s)
+    filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
+    new_sig, sample_rate = simulate_sensor_signal(filename, sensors, az_gt, c0);
+
+    # Open Multichannel Recording:
+    # using WAV
+    # new_sig, sample_rate = wavread("./test_signal.wav");
 
     #= 
     Step 1: Pre-process Signal by selecting 
           Frequency of Interest at each channel
     =#
-    include("../sensor.jl") # To retrieve Sensor Positions
-    include("../signal_generator/generate_sig.jl")
     include("../utils/preprocess.jl")
-    using WAV
-    # new_sig, sample_rate = wavread("./test_signal.wav");
     freq_interest = 1000; # (Hz)
     new_S = []
     for signal in eachcol(new_sig)
@@ -43,8 +53,8 @@ if abspath(PROGRAM_FILE) == @__FILE__
     =#
     using Statistics
     Rx = cov(new_S, dims=2);
-    P, az_list = cbf(Rx, sensor);
-    P_mvdr, az_list = mvdr(Rx, sensor); # Technically MPDR
+    P, az_list = cbf(Rx, sensors);
+    P_mvdr, az_list = mvdr(Rx, sensors); # Technically MPDR
 
     #= 
     Step 3: Predict the Direction of Arrival based on Maximum Power

@@ -8,10 +8,14 @@ mic1 = [0 0 0] - shift
 mic2 = [0 max_dist 0] - shift
 mic3 = [max_dist max_dist 0] - shift
 mic4 = [max_dist 0 0] - shift
-sensor = [mic1; mic2; mic3; mic4]
+sensors = [mic1; mic2; mic3; mic4]
 
-# sensor = randn(25, 3)
+# sensors = randn(25, 3)
 
+# mic9 = [0.02009, -0.0285, 0]
+#=
+Sensor Positions for Matrix Creator
+=#
 mic1 = [0.02009, -0.0485, 0]
 mic2 = [-0.02009, -0.0485, 0]
 mic3 = [-0.0485, -0.02009, 0]
@@ -21,26 +25,27 @@ mic6 = [0.02009, 0.0485, 0]
 mic7 = [0.0485, 0.02009, 0]
 mic8 = [0.0485, -0.02009, 0]
 
-sensor = [mic1, mic2, mic3, mic4, mic5, mic6, mic7, mic8]; 
-println("Sensor Loaded: $(size(sensor))")
+
+sensors = [mic1, mic2, mic3, mic4, mic5, mic6, mic7, mic8]; 
+println("sensors Loaded: $(size(sensors))")
 
 #=
-If run as main file, it will plot the sensor locations
+If run as main file, it will plot the sensors locations
 on the x-y axis plane
 =#
 if abspath(PROGRAM_FILE) == @__FILE__ 
     using Plots
-    sensor_plot = mapreduce(permutedims, vcat, sensor)
-    for (idx, mic) in enumerate(sensor)
+    sensors_plot = mapreduce(permutedims, vcat, sensors)
+    for (idx, mic) in enumerate(sensors)
         plot!([mic[1]], [mic[2]], st=:scatter, label="mic$idx",
                 framestyle=:origin,
                 aspect_ratio=:equal)
     end
     xlabel!("x - position (m)")
     ylabel!("y - position (m)")
-    title!("Sensor Positions")
-    savefig("./doa_experiment/plots/sensor.png")
+    title!("sensors Positions")
+    savefig("./plots/sensors.png")
 
-    # println("Sensor_plot shape: $(size(sensor_plot))")
-    # plot(sensor_plot[:,1], sensor_plot[:,2], st=:scatter)
+    # println("sensors_plot shape: $(size(sensors_plot))")
+    # plot(sensors_plot[:,1], sensors_plot[:,2], st=:scatter)
 end
