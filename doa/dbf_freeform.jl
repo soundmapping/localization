@@ -155,22 +155,26 @@ new_S = mapreduce(permutedims, vcat, new_S);
 Step 2: Generate Beamformer Pattern based on Different 
 =#
 using Statistics
-order = 1;
+include("./cbf.jl")
+order = 2;
 Rx = cov(new_S, dims=2);
-P, az_list = dbf_coFree(Rx, sensors, order);
+P_cbf, az_list = cbf(Rx, sensors);
+P_dbf, az_list = dbf_coFree(Rx, sensors, order);
+
 
 #= 
 Step 3: Predict the Direction of Arrival based on Maximum Power
 =#
-include("./cbf.jl")
-P_dbf_db, az_dbf_max = predict_az(P, az_list);
+P_cbf_db, az_cbf_max = predict_az(P_cbf, az_list);
+P_dbf_db, az_dbf_max = predict_az(P_dbf, az_list);
 
 #= 
 Step 4: Plot Beamformer Power Spectras
 =#
-ymin = minimum([P_dbf_db;]);
+ymin = minimum([P_cbf_db; P_dbf_db;]);
 using Plots
-plot(az_list, P_dbf_db, label="DBF order $(order) = $(az_dbf_max)°");
+plot(az_list, P_cbf_db, label="DoA = $(az_cbf_max)°");
+plot!(az_list, P_dbf_db, label="DBF order $(order) = $(az_dbf_max)°");
 xlabel!("Azimuth Angle (°)");
 ylabel!("Power (dB)");
 plot!([az_gt, az_gt], [ymin, 0],
@@ -184,7 +188,9 @@ savefig("./plots/DBF_coFree_order$(order)_Power_Spectra.png")
 #= 
 Step 5: Plot Polar Plots of Beampattern
 =#
-plot(deg2rad.(az_list), P_dbf_db, proj=:polar, 
+plot(deg2rad.(az_list), P_cbf_db, proj=:polar, 
+            label="CBF: $(az_cbf_max)°");
+plot!(deg2rad.(az_list), P_dbf_db, proj=:polar, 
         label="dbf order $(order): $(az_dbf_max)°");
 plot!(deg2rad.([az_gt, az_gt]),
     [ymin, 0],
