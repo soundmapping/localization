@@ -27,14 +27,16 @@ Returns the MUSIC Pseudo Power Spectra with the associated Azimuth Angles
 Input:
 Rx          : Covariance Matrix of Signal
 sensors      : Sensor Positions corresponding to Rx
+f           : Frequency (in Hz)
+c0          : Speed of Medium (in m/S)
 
 Output:
 P           : Power of MPDR Beampattern
 az_list     : List Containing Azimuth Angles
 =#
-function music(Rx, sensors, n_signals);
+function music(Rx, sensors, n_signals, f=1000, c0=343);
     eig_vals, Rs, Rn = get_eigensubspace(Rx, n_signals);
-    P_music, az_list = cbf(Rn, sensors);
+    P_music, az_list = cbf(Rn, sensors, f, c0);
     return (1 ./ P_music), az_list
 end
 

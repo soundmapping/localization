@@ -72,7 +72,9 @@ function create_ψ_matrix(sensors::Vector, order=3, f=1000, c0=343)
             value = ( (-1.0im)^n ) .* ψ(sensor[1], sensor[2], n, f, c0);
             append!(ψ_vec_n, value)
         end
-        ψ_mat[idx, :] = ψ_vec_n';
+        # println("ψ_vec_n = $(ψ_vec_n)")
+        # println(" and its transpose: $(ψ_vec_n)")
+        ψ_mat[idx, :] = conj(ψ_vec_n'); # ' only transposes
     end
     return ψ_mat
 end
@@ -108,7 +110,12 @@ az_list     : List Containing Azimuth Angles (in degrees)
 =#
 function dbf_coFree(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
     v = ones(2*order+1); # Weights associated with DBF
+
+    # v = [4.0, 2.0, -2.0, -1.0, -2.0, 2.0, 4.0];
     v ./= size(v,1);
+
+    # v = [0.25, 0.5, 0.25];
+    println("weighting vector: $v has sum $(sum(v))")
     ψ = create_ψ_matrix(sensors, order, f, c0);
     sensor_term = ψ' * inv( ψ * ψ' );
 
@@ -116,90 +123,94 @@ function dbf_coFree(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
     P = Vector{}(undef, size(az_list,1));
     for (idx, az) in enumerate(az_list)
         γ = steering_matrix(az, order);
-        h_dbf = sensor_term * γ' * v;
+        h_dbf = sensor_term * conj(γ) * v;
         P[idx] = h_dbf' * Rx * h_dbf;
     end
     return abs.(P), az_list;
 end
 
-include("../sensor.jl") # To retrieve Sensor Positions
-#=
-Step 0: Open recording or generate signal
-=#
-# To Generate Signal:
-include("../signal_generator/generate_sig.jl")
-az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
-c0 = 343;       # Speed of Medium (in m/s)
-filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
-new_sig, sample_rate = simulate_sensor_signal(filename, sensors, az_gt, c0);
+if abspath(PROGRAM_FILE) == @__FILE__ 
+    include("../sensor.jl") # To retrieve Sensor Positions
+    #=
+    Step 0: Open recording or generate signal
+    =#
+    # To Generate Signal:
+    include("../signal_generator/generate_sig.jl")
+    az_gt = 0;      # Ground Truth Azimuth Angle (in degrees)
+    c0 = 343;       # Speed of Medium (in m/s)
+    filename = "./signal_generator/1kHz_tone_sr32kHz.wav";
+    filename = "./signal_generator/50Hz_tone_sr32kHz.wav";
+    new_sig, sample_rate = simulate_sensor_signal(filename, sensors2, az_gt, c0);
 
-# Open Multichannel Recording:
-# using WAV
-# new_sig, sample_rate = wavread("./test_signal.wav");
+    # Open Multichannel Recording:
+    # using WAV
+    # new_sig, sample_rate = wavread("./test_signal.wav");
 
-#= 
-Step 1: Pre-process Signal by selecting 
-      Frequency of Interest at each channel
-=#
-include("../utils/preprocess.jl")
-freq_interest = 1000; # (Hz)
-new_S = []
-for signal in eachcol(new_sig)
-    S_interest = choose_freq(signal, freq_interest, sample_rate);
-    push!(new_S, S_interest);
+    #= 
+    Step 1: Pre-process Signal by selecting 
+        Frequency of Interest at each channel
+    =#
+    include("../utils/preprocess.jl")
+    freq_interest = 50.0; # (Hz)
+    c0 = 1500; # (m/s)
+    new_S = []
+    for signal in eachcol(new_sig)
+        S_interest = choose_freq(signal, freq_interest, sample_rate);
+        push!(new_S, S_interest);
+    end
+    # test_sig = Matrix{}(undef, size(new_sig, 2)) 
+    new_S = mapreduce(permutedims, vcat, new_S);
+
+    #=
+    Step 2: Generate Beamformer Pattern based on Different 
+    =#
+    using Statistics
+    include("./cbf.jl")
+    order = 1;
+    Rx = cov(new_S, dims=2);
+    P_cbf, az_list = cbf(Rx, sensors2, freq_interest, c0);
+    P_dbf, az_list = dbf_coFree(Rx, sensors2, order, freq_interest, c0);
+
+
+    #= 
+    Step 3: Predict the Direction of Arrival based on Maximum Power
+    =#
+    P_cbf_db, az_cbf_max = predict_az(P_cbf, az_list);
+    P_dbf_db, az_dbf_max = predict_az(P_dbf, az_list);
+
+    #= 
+    Step 4: Plot Beamformer Power Spectras
+    =#
+    ymin = minimum([P_cbf_db; P_dbf_db;]);
+    using Plots
+    plot(az_list, P_cbf_db, label="DoA = $(az_cbf_max)°");
+    plot!(az_list, P_dbf_db, label="DBF order $(order) = $(az_dbf_max)°");
+    xlabel!("Azimuth Angle (°)");
+    ylabel!("Power (dB)");
+    plot!([az_gt, az_gt], [ymin, 0],
+        label="True Azimuth Angle = $(az_gt)°",
+        marker=:x)
+    plot!([az_dbf_max, az_dbf_max], [ymin, 0],
+        label="Predicted Azimuth Angle = $(az_dbf_max)°",
+        marker=:x)
+    savefig("./plots/DBF_coFree_order$(order)_Power_Spectra.png")
+
+    #= 
+    Step 5: Plot Polar Plots of Beampattern
+    =#
+    plot(deg2rad.(az_list), P_cbf_db, proj=:polar, 
+                label="CBF: $(az_cbf_max)°");
+    plot!(deg2rad.(az_list), P_dbf_db, proj=:polar, 
+            label="DBF order $(order): $(az_dbf_max)°");
+    plot!(deg2rad.([az_gt, az_gt]),
+        [ymin, 0],
+        label="True Azimuth Angle = $(az_gt)°",
+        marker=:x);
+    plot!(deg2rad.([az_dbf_max, az_dbf_max]),
+        [ymin, 0],
+        label="Predicted Azimuth Angle = $(az_dbf_max)°",
+        marker=:x)
+
+    ylims!((ymin, maximum(P_dbf_db)));
+    savefig("./plots/DBF_coFree_order$(order)_Beamformer.png")
 end
-# test_sig = Matrix{}(undef, size(new_sig, 2)) 
-new_S = mapreduce(permutedims, vcat, new_S);
-
-#=
-Step 2: Generate Beamformer Pattern based on Different 
-=#
-using Statistics
-include("./cbf.jl")
-order = 2;
-Rx = cov(new_S, dims=2);
-P_cbf, az_list = cbf(Rx, sensors);
-P_dbf, az_list = dbf_coFree(Rx, sensors, order);
-
-
-#= 
-Step 3: Predict the Direction of Arrival based on Maximum Power
-=#
-P_cbf_db, az_cbf_max = predict_az(P_cbf, az_list);
-P_dbf_db, az_dbf_max = predict_az(P_dbf, az_list);
-
-#= 
-Step 4: Plot Beamformer Power Spectras
-=#
-ymin = minimum([P_cbf_db; P_dbf_db;]);
-using Plots
-plot(az_list, P_cbf_db, label="DoA = $(az_cbf_max)°");
-plot!(az_list, P_dbf_db, label="DBF order $(order) = $(az_dbf_max)°");
-xlabel!("Azimuth Angle (°)");
-ylabel!("Power (dB)");
-plot!([az_gt, az_gt], [ymin, 0],
-    label="True Azimuth Angle = $(az_gt)°",
-    marker=:x)
-plot!([az_dbf_max, az_dbf_max], [ymin, 0],
-    label="Predicted Azimuth Angle = $(az_dbf_max)°",
-    marker=:x)
-savefig("./plots/DBF_coFree_order$(order)_Power_Spectra.png")
-
-#= 
-Step 5: Plot Polar Plots of Beampattern
-=#
-plot(deg2rad.(az_list), P_cbf_db, proj=:polar, 
-            label="CBF: $(az_cbf_max)°");
-plot!(deg2rad.(az_list), P_dbf_db, proj=:polar, 
-        label="dbf order $(order): $(az_dbf_max)°");
-plot!(deg2rad.([az_gt, az_gt]),
-    [ymin, 0],
-    label="True Azimuth Angle = $(az_gt)°",
-    marker=:x);
-plot!(deg2rad.([az_dbf_max, az_dbf_max]),
-    [ymin, 0],
-    label="Predicted Azimuth Angle = $(az_dbf_max)°",
-    marker=:x)
-
-ylims!((ymin, maximum(P_dbf_db)));
-savefig("./plots/DBF_coFree_order$(order)_Beamformer.png")

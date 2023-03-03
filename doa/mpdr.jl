@@ -7,14 +7,16 @@ Returns the MPDR Power Spectra with the associated Azimuth Angles
 Input:
 Rx          : Covariance Matrix of Signal
 sensors     : Sensor Positions corresponding to Rx
+f           : Frequency (in Hz)
+c0          : Speed of Medium (in m/S)
 
 Output:
 P           : Power of MPDR Beampattern
 az_list     : List Containing Azimuth Angles
 =#
-function mvdr(Rx, sensors)
+function mvdr(Rx, sensors, f=1000, c0=343)
     println("For Sanity Check, Rank of Covariance Matrix: $(rank(Rx))")
-    P_mvdr, az_list = cbf(inv(Rx), sensors);
+    P_mvdr, az_list = cbf(inv(Rx), sensors, f, c0);
     return (1 ./ P_mvdr), az_list
 end
 

@@ -14,9 +14,9 @@ Output:
 weight      : Delay coefficient
 =#
 function vandermonde_weight(sensor_pos, az, el, f=1000, c0=343)
-    w0 = 2 * π * f;
+    ω = 2 * π * f;
     τ = generate_time_delay(sensor_pos, az, el, c0)
-    weight = exp.(-1im * w0 * τ)
+    weight = exp.(-1im * ω * τ)
     # println("Weights size: ", size(weights))
 
     return weight 
