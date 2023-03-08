@@ -6,9 +6,9 @@ julia install.jl
 ```
 
 To regenerate the [Underwater](https://ieeexplore.ieee.org/document/9068235) paper:
-'''
+```
 julia underwater.jl
-'''
+```
 
 Note: Refer to [./doa/dbf_freeform.jl](./doa/dbf_freeform.jl) on how to generate Differential Beamforming DoAs
 
