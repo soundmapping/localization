@@ -29,17 +29,17 @@ function dbf_max_spacing(factor=0.1, f=1000, c0=343.0)
     return (c0 * factor / (2*f))
 end
 
-c0 = 343; # Speed of Sound (m/s)
-f = 20000;   # Frequency of Interest
-wavelength = c0 / f;
-max_dist = wavelength / 2;
+# c0 = 343; # Speed of Sound (m/s)
+# f = 20000;   # Frequency of Interest
+# wavelength = c0 / f;
+# max_dist = wavelength / 2;
 
-shift = [max_dist/2 max_dist/2 0]
-mic1 = [0 0 0] - shift
-mic2 = [0 max_dist 0] - shift
-mic3 = [max_dist max_dist 0] - shift
-mic4 = [max_dist 0 0] - shift
-sensors = [mic1; mic2; mic3; mic4]
+# shift = [max_dist/2 max_dist/2 0]
+# mic1 = [0 0 0] - shift
+# mic2 = [0 max_dist 0] - shift
+# mic3 = [max_dist max_dist 0] - shift
+# mic4 = [max_dist 0 0] - shift
+# sensors = [mic1; mic2; mic3; mic4]
 
 # sensors = randn(25, 3)
 
@@ -57,6 +57,7 @@ mic8 = [0.0485, -0.02009, 0]
 
 # mic9 = [0.04009, -0.0285, 0] # For oddity
 
+# An Example of how to use tools
 # println("Aliasing: $(check_aliasing(mic1, mic2, 800))")
 # println("Aliasing Frequency: $(aliasing_frequency(mic1, mic5, 343.0)) Hz")
 # println("DBF Condition: $(dbf_condition(mic1, mic2, 1000))")
@@ -67,7 +68,7 @@ sensors = [mic1, mic2, mic3, mic4, mic5, mic6, mic7, mic8];
 println("sensors Loaded: $(size(sensors))")
 
 #=
-Sensor based on this paper:
+Underwater Sensor based on this paper:
 https://ieeexplore.ieee.org/document/9068235
 =#
 mic1 = [0.5, 0, 0];
@@ -165,6 +166,50 @@ mic40,
 println("sensors1 Loaded: $(size(sensors1))")
 println("sensors2 Loaded: $(size(sensors2))")
 
+sensors_underwater = [mic1, 
+mic2, 
+mic3, 
+mic4, 
+mic5, 
+mic6, 
+mic7, 
+mic8, 
+mic9, 
+mic10, 
+mic11, 
+mic12, 
+mic13, 
+mic14, 
+mic15, 
+mic16, 
+mic17, 
+mic18, 
+mic19, 
+mic20, 
+mic21, 
+mic22, 
+mic23, 
+mic24, 
+mic25, 
+mic26, 
+mic27, 
+mic28, 
+mic29, 
+mic30, 
+mic31, 
+mic32, 
+mic33, 
+mic34, 
+mic35, 
+mic36, 
+mic37, 
+mic38, 
+mic39, 
+mic40, 
+];
+
+println("sensors_underwater loaded: $(size(sensors_underwater))");
+
 #=
 If run as main file, it will plot the sensors locations
 on the x-y axis plane
@@ -185,19 +230,19 @@ if abspath(PROGRAM_FILE) == @__FILE__
     #=
     Sensors 1 Plot
     =#
-    s1 = [1, 2, 3, 4, 5, 9, 10, 11, 12, 13,
-     17, 18, 19, 20, 21, 25, 26, 27, 28, 29,
-      33, 34, 35, 36, 37];
+    # s1 = [1, 2, 3, 4, 5, 9, 10, 11, 12, 13,
+    #  17, 18, 19, 20, 21, 25, 26, 27, 28, 29,
+    #   33, 34, 35, 36, 37];
 
-    for (idx, mic) in enumerate(sensors1)
-        plot!([mic[1]], [mic[2]], st=:scatter, label="mic$(s1[idx])",
-                framestyle=:origin,
-                aspect_ratio=:equal)
-    end
-    xlabel!("x - position (m)")
-    ylabel!("y - position (m)")
-    title!("sensors1 Positions")
-    savefig("./plots/sensors1.png")
+    # for (idx, mic) in enumerate(sensors1)
+    #     plot!([mic[1]], [mic[2]], st=:scatter, label="mic$(s1[idx])",
+    #             framestyle=:origin,
+    #             aspect_ratio=:equal)
+    # end
+    # xlabel!("x - position (m)")
+    # ylabel!("y - position (m)")
+    # title!("sensors1 Positions")
+    # savefig("./plots/sensors1.png")
 
     #=
     Sensors 2 Plot
@@ -213,6 +258,19 @@ if abspath(PROGRAM_FILE) == @__FILE__
     # ylabel!("y - position (m)")
     # title!("sensors2 Positions")
     # savefig("./plots/sensors2.png")
+
+    #=
+    sensors_underwater Plot
+    =#
+    for (idx, mic) in enumerate(sensors_underwater)
+        plot!([mic[1]], [mic[2]], st=:scatter, label="mic$(idx)",
+                framestyle=:origin,
+                aspect_ratio=:equal)
+    end
+    xlabel!("x - position (m)")
+    ylabel!("y - position (m)")
+    title!("sensors_underwater Positions")
+    savefig("./plots/sensors_underwater.png")
 
     # println("sensors_plot shape: $(size(sensors_plot))")
     # plot(sensors_plot[:,1], sensors_plot[:,2], st=:scatter)
