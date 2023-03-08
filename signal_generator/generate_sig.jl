@@ -55,7 +55,7 @@ new_sig     : Delayed Signals according to sensors' positions
 sample_rate : Sampling Rate of Signal (in Hz)
 az_gt       : Simulated Azimuth Angle (in Degrees)
 =#
-function simulate_sensor_signal(filename::String, sensors::Vector, 
+function simulate_sensor_signal_from_file(filename::String, sensors::Vector, 
                                 az_gt = 0.0, c0=343.0)
     #= 
     Step 0: Open Sound File of Interest

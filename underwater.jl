@@ -60,18 +60,6 @@ order = 3;
 # @time P_mvdr, az_list = mvdr(Rx, sensors_underwater, freq_interest, c0); # Technically MPDR
 println("\n")
 
-#=
-Step 2b: Generate Differential Beamformer
-if using ./doa/dbf.jl
-=#
-# order = 3; # Order of DBF
-# println("For Differential Beamformer: ");
-# @time P_dbf, az_list = dbf(new_S, sensors_underwater, order)
-# P_dbf_db = pow2db.(abs.(P_dbf));
-# P_dbf_db .-= maximum(P_dbf_db);
-# P_dbf_max, az_dbf_max = findmax(P_dbf_db);
-# println("\n")
-
 #= 
 Step 3: Predict the Direction of Arrival based on Maximum Power
 =#
