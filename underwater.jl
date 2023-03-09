@@ -12,7 +12,7 @@ include("./doa/dbf_freeform.jl") # Differential Beamformer (coordinate-free)
 include("./utils/preprocess.jl")
 
 #=
-Step 0: Open recording or generate signal_
+Step 0: Open recording or generate signal
 =#
 
 # To Generate Signal:
