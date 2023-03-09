@@ -18,13 +18,15 @@ Step 0: Open recording or generate signal
 # To Generate Signal:
 include("./signal_generator/generate_sig.jl")
 include("./signal_generator/tone.jl")
-az_gt = -90;      # Ground Truth Azimuth Angle (in degrees)
-c0 = 1500;       # Speed of Medium (in m/s)
-freq = 50;         # Frequency of Tone
+az_gt = -90;        # Ground Truth Azimuth Angle (in degrees)
+c0 = 1500;          # Speed of Medium (in m/s)
+freq = 50;          # Frequency of Tone (in Hz)
+amp = 1;            # Amplitude of Tone
+duration = 1;       # Duration of Tone (in seconds)
 sample_rate = 8000.0;
-tone_sig, n = tone(1, 1, freq, sample_rate);
+tone_sig, n = tone(duration, amp, freq, sample_rate);
 new_sig, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, az_gt, c0);
-new_sig2, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 120, c0);
+# new_sig2, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 120, c0);
 # new_sig3, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 0, c0);
 new_sig .+= new_sig2 #.+ new_sig3;
 
