@@ -24,9 +24,9 @@ freq = 50;         # Frequency of Tone
 sample_rate = 8000.0;
 tone_sig, n = tone(1, 1, freq, sample_rate);
 new_sig, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, az_gt, c0);
-# new_sig2, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 120, c0);
+new_sig2, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 120, c0);
 # new_sig3, sample_rate = simulate_sensor_signal(tone_sig, sample_rate, sensors_underwater, 0, c0);
-# new_sig .+= new_sig2 .+ new_sig3;
+new_sig .+= new_sig2 #.+ new_sig3;
 
 #= 
 Step 1: Pre-process Signal by selecting 
