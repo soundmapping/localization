@@ -26,22 +26,29 @@ end
 #=
 Input:
 signal          : Single Channel Signal
-freq_interest   : Frequency of Interest (in Hz)
 fs              : Sampling Rate of Signal (in Hz)
-window          : Size of Window for STFT
+win_size        : Size of Window for STFT
 noverlap        : Number of Samples Overlapping
+window          : Window Function (Refer to DSP.Windows -> Note 2)
 
 Output:
 S               : STFT (Complex Matrix: # frequencies * # strided samples)
 frequencies     : Vector containing Frequencies (given Sampling Rate fs)
 times           : Vector containing timestamp (given fs, window & noverlap)
+
+Note: For speech processing, get NFFT coressponding to 23ms (512 for fs:22.050kHz)
+Note 2: https://docs.juliadsp.org/stable/windows/
+
+Guide to window size & noverlap: 
+https://www.dsprelated.com/freebooks/sasp/Choice_Hop_Size.html
 =#
-function generate_STFT(signal, freq_interest, fs=32000, window=2^11, noverlap=2^8)
-    S = spectrogram(signal, window, noverlap; fs=fs)
+function generate_STFT(signal, fs=32000, win_size::Int=2^11,
+     noverlap::Int=Int(window * (3//4)), window::Function=DSP.Windows.hanning)
+    S = spectrogram(signal, win_size, noverlap; fs=fs)
     frequencies = DSP.Periodograms.freq(S);
     times = DSP.Periodograms.time(S)
     # (_, freq_idx) = findmin( abs.(frequencies .- freq_interest) )
-    S = stft(signal, window, noverlap; fs=32000)
+    S = stft(signal, win_size, noverlap; fs=fs, window=window)
 
     # return S[freq_idx, :]
     return S, frequencies, times

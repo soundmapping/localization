@@ -2,7 +2,7 @@ function tone(duration=90, amp=1, f=1000, sample_rate=32000)
     # t = 0:duration;/
     n = 0:(duration.*sample_rate - 1);
     P = amp .* sin.(2 .* π .* f ./ sample_rate .* n);
-    P = mapreduce(permutedims, vcat, [P]);
+    P = mapreduce(permutedims, vcat, [P']);
     return P, n
 end
 
