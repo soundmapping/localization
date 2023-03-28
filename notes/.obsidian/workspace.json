@@ -1,0 +1,193 @@
+{
+  "main": {
+    "id": "4ae10b01971d1e91",
+    "type": "split",
+    "children": [
+      {
+        "id": "bc792e3c5c7d2034",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "93541ac12c6b188e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1_Differential Beamforming.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "bdc95d9e0c153320",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2_Chebyshev Form of DBF.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "d270dbe2ff226aae",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1_Differential Beamforming.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "7c9086b471ef65a7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1_Differential Beamforming.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8b6450eb61f8a2f1",
+    "type": "split",
+    "children": [
+      {
+        "id": "d57b87a902a5fadd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c9d6ab98b81341c6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "f9875783d9ba48f3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8d1a748a7ae2fec3",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "9a443596cfda88aa",
+    "type": "split",
+    "children": [
+      {
+        "id": "f5473d57000b4b04",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "89eda5711fc8001e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "1_Differential Beamforming.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "967668b5b2345ad2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "1_Differential Beamforming.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "714d78595dff862a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "e3b038b85ff83f76",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "1_Differential Beamforming.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "7c9086b471ef65a7",
+  "lastOpenFiles": [
+    "2_Chebyshev Form of DBF.md",
+    "3_DBF in Arbitrary Planar Array Geometry.md",
+    "0_Beamforming Definitions.md",
+    "1_Differential Beamforming.md",
+    "reference.bib"
+  ]
+}
