@@ -35,7 +35,7 @@ We can further simplify the analysis by defining the following:
 - $1 - \alpha_{1} = a_{1} = \frac{(d/c_{0})}{\tau + (d/c_{0})}$
 - $a_{0} + a_{1} = 1$
 to yield the **Normalized Directional Response** :
-$E_{N_{1}}(\theta) = a_{0} + a_{1} = \alpha_{1} + (1 - \alpha_{1}) \cos{(\theta)} \textit{  s.t.  } E_{N_{1}}(0) = 1$
+$E_{N_{1}}(\theta) = a_{0} + a_{1}\cos{(\theta)} = \alpha_{1} + (1 - \alpha_{1}) \cos{(\theta)} \textit{  s.t.  } E_{N_{1}}(0) = 1$
 
 In general, we can express the **N-th order Differential beamformer** of the form:
 - Summation Form: $E_{N}(\theta) = \sum_{n=0}^{N} a_{n} \cos^{n}{(\theta)}$

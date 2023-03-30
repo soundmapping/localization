@@ -4,4 +4,4 @@ $B_N(\theta - \theta_{S}) = \sum_{n = 0}^{N} a_{n, N} \cos{(\theta - \theta_{S})
 We can convert the beampattern to give the following form:
 $B_N(\theta - \theta_{S}) = \sum_{n = 0}^{N} b_{n, N} \cos{n(\theta - \theta_{S})}$
 
-where the coefficients can be converted
+where the coefficients can be converted by observing the chebyshev polynomial expansions of the above
