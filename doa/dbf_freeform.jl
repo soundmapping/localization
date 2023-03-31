@@ -101,6 +101,7 @@ function steering_matrix(az_steer_deg, order)
     return γ
 end
 
+
 #=
 dbf_coFree() creates the Differential Beamformer (coordinate-free)
 based on the Correlation Matrix Rx and sensors' positions
@@ -133,6 +134,7 @@ function dbf_coFree(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
     end
     return abs.(P), az_list, ψ, h_filter;
 end
+
 
 if abspath(PROGRAM_FILE) == @__FILE__ 
     include("../sensor.jl") # To retrieve Sensor Positions

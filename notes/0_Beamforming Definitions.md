@@ -23,3 +23,4 @@ $\arg \max_{\theta_{1}, ..., \theta_{k}} \mathbb{E}_{\mathbf{Y}} \{ |\mathbf{h}_
 $\begin{equation} \mathbf{h_n} = \begin{bmatrix} \vdots \\ \exp{-j \frac{2\pi}{\lambda} d_i \cos{\theta_{scan}}} \\ \vdots \end{bmatrix} \end{equation}$
 
 
+
