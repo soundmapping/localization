@@ -1,6 +1,11 @@
 include("./cbf.jl")
 
 #=
+Based on this paper:
+https://ieeexplore.ieee.org/document/9037110
+=#
+
+#=
 Creates c vector to build Delta Matrix
 p   : Order of Differnetial
 =#

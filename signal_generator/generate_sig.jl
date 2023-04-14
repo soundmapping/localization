@@ -21,10 +21,11 @@ Output:
 new_sig     : Delayed Signal at respective channel/sensor
                 (Matrix of size num_samples * num_sensors)
 =#
-function delay_signal(signal::Matrix, d::Vector, fs)
-    size(sig, 2) == 1 ? 1 : @error throw(
+function delay_signal_fft(signal::Matrix, d::Vector, fs)
+    size(signal, 2) == 1 ? 1 : @error throw(
         DimensionMismatch("signal needs to be a num_samples * 1 matrix instead of $(size(sig))")) 
 
+    println("Using FFT for Delaying")
     g(y, delay, freq) = y*exp(-1im*2*π*freq*delay);
     Y = fft(signal);
     Y = vec(Y);
@@ -62,10 +63,11 @@ For window function, refer to https://docs.juliadsp.org/stable/windows/
 Guide to window size & noverlap: 
 https://www.dsprelated.com/freebooks/sasp/Choice_Hop_Size.html
 =#
-function delay_signal(sig, delays::Vector, fs::AbstractFloat, 
+function delay_signal_stft(sig, delays::Vector, fs::AbstractFloat, 
     NFFT::Int=2^11, noverlap::Int=Int(NFFT * (3//4)), window=hanning)
     size(sig, 2) == 1 ? 1 : @error throw(DimensionMismatch("signal needs to be a num_samples * 1 matrix instead of $(size(sig))")) 
 
+    println("Using STFT w/ NFFT=$(NFFT) & noverlap=$(noverlap)")
     # STFT of mono channel & prepare multichannel signal
     g(y, delay, freq) = y*exp(-1im*2*π*freq*delay);
     new_sig = zeros( size(sig,1), size(delays,1)); # num_samples * num_ch
@@ -186,7 +188,7 @@ function simulate_sensor_signal(signal::Matrix, sample_rate::AbstractFloat, sens
     println("Signal has size: $(size(signal))")
     mod_signal = signal;
     mod_signal[start_idx:end, :] .= 0; # Only taking 1 second of Signal
-    @time new_sig = delay_signal(mod_signal, d, sample_rate);
+    @time new_sig = delay_signal_fft(mod_signal, d, sample_rate);
     println("Now Generated Signal has size: $(size(new_sig))")
 
     return new_sig, sample_rate
@@ -230,7 +232,7 @@ function simulate_sensor_signal(signal::Matrix, sample_rate::AbstractFloat, sens
     sample with respective delays
     =#
     println("Signal has size: $(size(signal))")
-    @time new_sig = delay_signal(signal, delays, sample_rate, NFFT, noverlap, window);
+    @time new_sig = delay_signal_stft(signal, delays, sample_rate, NFFT, noverlap, window);
     println("Now Generated Signal has size: $(size(new_sig))")
 
     return new_sig, sample_rate

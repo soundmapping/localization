@@ -50,11 +50,13 @@ function mdbf(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343, wng_pow=db2p
 
     println("weighting vector: $v has sum $(sum(v))")
     ψ_mat = create_ψ_matrix(sensors, order, f, c0);
-    println("ψ has rank $(rank(ψ))")
+    println("ψ has rank $(rank(ψ_mat))")
 
     az_list = LinRange(-180,180,361);
     P = Vector{}(undef, size(az_list,1));
     h_filters = [];
+    polar_sensor = sensors_in_polar(sensors);
+
     for (idx, az) in enumerate(az_list)
         γ = steering_matrix(az, order);
         d = d_vec.(freq, deg2rad(az), polar_sensor, c0);
@@ -62,5 +64,5 @@ function mdbf(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343, wng_pow=db2p
         P[idx] = h_mdbf' * Rx * h_mdbf;
         push!(h_filters, h_mdbf)
     end
-    return abs.(P), az_list, ψ, h_filter;
+    return abs.(P), az_list, ψ, h_filters;
 end
