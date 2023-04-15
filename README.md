@@ -5,6 +5,9 @@ To start, after cloning the repo, run the following to install dependencies:
 julia install.jl
 ```
 
+For understanding the Process Pipeline, refer to the following [notebook](./runme.ipynb)
+`./runme.ipynb`
+
 To regenerate the [Underwater](https://ieeexplore.ieee.org/document/9068235) paper:
 ```
 julia underwater.jl

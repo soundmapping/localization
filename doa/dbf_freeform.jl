@@ -116,9 +116,9 @@ az_list     : List Containing Azimuth Angles (in degrees)
 =#
 function dbf_coFree(Rx::Matrix, sensors::Vector, order=3, f=1000, c0=343)
     # Creates 1st Order Cardioid, 2nd or 3rd -Order Hypercardioid
-    # v = ones(Rational, 2*order+1); # Weights associated with DBF
-    # v .//= size(v,1);
-    v = [1//2, 0//2, 1//2];
+    v = ones(Rational, 2*order+1); # Weights associated with DBF
+    v .//= size(v,1);
+    # v = [1//2, 0//2, 1//2];
 
     println("weighting vector: $v has sum $(sum(v))")
     ψ = create_ψ_matrix(sensors, order, f, c0);
