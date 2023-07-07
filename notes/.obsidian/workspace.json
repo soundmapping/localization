@@ -37,19 +37,19 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "1_Differential Beamforming.md",
+                "file": "3_DBF in Arbitrary Planar Array Geometry.md",
                 "mode": "source",
                 "source": false
               }
             }
           },
           {
-            "id": "7c9086b471ef65a7",
+            "id": "17e8d528e530e192",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "1_Differential Beamforming.md",
+                "file": "4_White Noise Gaussian (WNG) Constraint.md",
                 "mode": "source",
                 "source": false
               }
@@ -122,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "1_Differential Beamforming.md",
+                "file": "4_White Noise Gaussian (WNG) Constraint.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "1_Differential Beamforming.md",
+                "file": "4_White Noise Gaussian (WNG) Constraint.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -162,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "1_Differential Beamforming.md"
+                "file": "4_White Noise Gaussian (WNG) Constraint.md"
               }
             }
           }
@@ -182,12 +182,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7c9086b471ef65a7",
+  "active": "17e8d528e530e192",
   "lastOpenFiles": [
-    "2_Chebyshev Form of DBF.md",
     "3_DBF in Arbitrary Planar Array Geometry.md",
-    "0_Beamforming Definitions.md",
+    "2_Chebyshev Form of DBF.md",
     "1_Differential Beamforming.md",
+    "0_Beamforming Definitions.md",
+    "notebooks",
+    "4_White Noise Gaussian (WNG) Constraint.md",
+    "dbf_order1.md",
+    "figures/dbf_order1.png",
+    "figures",
     "reference.bib"
   ]
 }

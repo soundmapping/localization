@@ -1,6 +1,5 @@
 using LinearAlgebra
 using WAV
-using DSP
 using FFTW
 using WAV
 
@@ -41,7 +40,7 @@ function delay_signal_fft(signal::Matrix, d::Vector, fs)
     return new_sig
 end
 
-using SignalAnalysis: istft
+# using SignalAnalysis: istft
 #=
 delay_signal() delays the signal according to time delays in d
 thru the frequency domain (might help for non-integerized delays)
@@ -63,6 +62,57 @@ For window function, refer to https://docs.juliadsp.org/stable/windows/
 Guide to window size & noverlap: 
 https://www.dsprelated.com/freebooks/sasp/Choice_Hop_Size.html
 =#
+# function delay_signal_stft(sig, delays::Vector, fs::AbstractFloat, 
+#     NFFT::Int=2^11, noverlap::Int=Int(NFFT * (3//4)), window=rect)
+#     size(sig, 2) == 1 ? 1 : @error throw(DimensionMismatch("signal needs to be a num_samples * 1 matrix instead of $(size(sig))")) 
+
+#     println("Using STFT w/ NFFT=$(NFFT) & noverlap=$(noverlap)")
+#     # STFT of mono channel & prepare multichannel signal
+#     g(y, delay, freq) = y*exp(-1im*2*π*freq*delay);
+#     new_sig = zeros( size(sig,1), size(delays,1)); # num_samples * num_ch
+#     S, frequencies, times = generate_STFT(sig[:,1], sample_rate, NFFT, noverlap);
+
+#     # Delay each channel with respective delays in frequency domain,
+#     # followed by inv-STFT of each channel.
+#     for (ch, delay) in enumerate(delays)
+#         new_stft = Matrix{ComplexF64}(undef, size(S,1), size(S,2));
+#         for (time_idx, ffts) in enumerate(eachcol(S))
+#             delayed = g.(ffts, delay, frequencies);
+#             new_stft[:, time_idx] = delayed;
+#         end
+#         new_signal = istft(Real, new_stft; nfft=NFFT, noverlap=noverlap, window=window);
+#         new_sig[1:length(new_signal), ch] = new_signal;
+#         delay_int = Int(ceil(sample_rate*delay));
+#         new_sig[1:delay_int, ch] .= 0; # Assume no signal for causality reasons
+#     end
+
+#     return new_sig
+# end (to Fix)
+
+
+
+#=
+delay_signal() delays the signal according to time delays in d
+thru the frequency domain (might help for non-integerized delays)
+
+Input:
+signal      : Signal (num_samples * 1 Matrix)
+delays      : Delays for each sensor
+fs          : Sampling Frequency of Signal (Hz)
+NFFT        : (= Window Size) Number of FFT Points to take
+noverlap    : Number of samples overlapping during STFT stride
+window      : (A Function) Window function before taking individual FFT
+
+Output:
+new_sig     : Delayed Signal at respective channel/sensor
+                (Matrix of size num_samples * num_sensors)
+
+For window function, refer to https://docs.juliadsp.org/stable/windows/
+
+Guide to window size & noverlap: 
+https://www.dsprelated.com/freebooks/sasp/Choice_Hop_Size.html
+=#
+include("../utils/stft.jl")
 function delay_signal_stft(sig, delays::Vector, fs::AbstractFloat, 
     NFFT::Int=2^11, noverlap::Int=Int(NFFT * (3//4)), window=hanning)
     size(sig, 2) == 1 ? 1 : @error throw(DimensionMismatch("signal needs to be a num_samples * 1 matrix instead of $(size(sig))")) 
@@ -71,7 +121,8 @@ function delay_signal_stft(sig, delays::Vector, fs::AbstractFloat,
     # STFT of mono channel & prepare multichannel signal
     g(y, delay, freq) = y*exp(-1im*2*π*freq*delay);
     new_sig = zeros( size(sig,1), size(delays,1)); # num_samples * num_ch
-    S, frequencies, times = generate_STFT(sig[:,1], sample_rate, NFFT, noverlap);
+    # S, frequencies, times = generate_STFT(sig[:,1], sample_rate, NFFT, noverlap); # Old Techinique
+    S, times, frequencies = my_stft(sig[:,1], window(NFFT), noverlap, NFFT, fs)
 
     # Delay each channel with respective delays in frequency domain,
     # followed by inv-STFT of each channel.
@@ -81,7 +132,8 @@ function delay_signal_stft(sig, delays::Vector, fs::AbstractFloat,
             delayed = g.(ffts, delay, frequencies);
             new_stft[:, time_idx] = delayed;
         end
-        new_signal = istft(Real, new_stft; nfft=NFFT, noverlap=noverlap, window=window);
+        # new_signal = istft(Real, new_stft; nfft=NFFT, noverlap=noverlap, window=window); # Old Technique
+        new_signal = my_istft(new_stft, window(NFFT), noverlap);
         new_sig[1:length(new_signal), ch] = new_signal;
         delay_int = Int(ceil(sample_rate*delay));
         new_sig[1:delay_int, ch] .= 0; # Assume no signal for causality reasons

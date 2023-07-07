@@ -1,5 +1,4 @@
-using DSP
-using DSP.Periodograms
+using DSP: rect
 
 #=
 Input:
@@ -12,13 +11,15 @@ noverlap        : Number of Samples Overlapping
 Output:
 The STFT time series of the selected Frequency of Interest
 =#
-using DSP
-using DSP.Periodograms
+# using DSP
+# using DSP.Periodograms
+include("../utils/stft.jl")
 function choose_freq(signal, freq_interest, fs=32000, window=2^11, noverlap=2^8)
-    S = spectrogram(signal, window, noverlap; fs=fs)
-    frequencies = DSP.Periodograms.freq(S);
+    # S = spectrogram(signal, window, noverlap; fs=fs)
+    # frequencies = DSP.Periodograms.freq(S);
+    S, time, frequencies = my_stft(signal, rect(window), noverlap, window, fs);
     (_, freq_idx) = findmin( abs.(frequencies .- freq_interest) )
-    S = stft(signal, window, noverlap; fs=32000)
+    # S = stft(signal, window, noverlap; fs=32000)
 
     return S[freq_idx, :]
 end
